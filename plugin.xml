@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="aidaBuilder"
+         name="Aida Project Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="com.feup.contribution.aida.builder.AidaBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="aidaNature"
+         name="Aida Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="com.feup.contribution.aida.builder.AidaNature">
+         </run>
+      </runtime>
+      <builder
+            id="com.feup.contribution.aida.aidaBuilder">
+      </builder>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
+            nameFilter="*"
+            id="com.feup.contribution.aida.contribution1">
+         <action
+               label="Add/Remove Aida Nature"
+               class="com.feup.contribution.aida.builder.ToggleNatureAction"
+               menubarPath="additions"
+               enablesFor="+"
+               id="com.feup.contribution.aida.addRemoveNatureAction">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         id="xmlProblem"
+         name="XML Problem"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+
+</plugin>

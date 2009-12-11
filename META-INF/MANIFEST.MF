@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Aida
+Bundle-SymbolicName: com.feup.contribution.aida; singleton:=true
+Bundle-Version: 0.0.0.1
+Bundle-Activator: com.feup.contribution.aida.Activator
+Bundle-Vendor: FEUP
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
