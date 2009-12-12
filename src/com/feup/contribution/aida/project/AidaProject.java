@@ -1,6 +1,7 @@
 package com.feup.contribution.aida.project;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -51,6 +52,29 @@ public class AidaProject {
 			for (String unitName : apackage.getUnitNames()) {
 				AidaPlugin.getDefault().log("  " + unitName);
 			}
+			LinkedList<AidaPackage> referenced = apackage.getReferencedPackages();
+			for (AidaPackage aidaPackage : referenced) {
+				AidaPlugin.getDefault().log(" -> " + aidaPackage.getName());				
+			}
 		}		
+	}
+
+	public AidaPackage getPackageForUnit(String unitName) {
+		AidaPlugin.getDefault().log("Looking for " + unitName);
+		for (String pName : packages.keySet()) {
+			AidaPackage apackage = packages.get(pName);
+			for (String unit : apackage.getUnitNames()) {
+				AidaPlugin.getDefault().log("Found " + unit);
+				if (unit.equals(unitName)) return apackage;
+			}
+		}
+		return null;
+	}
+
+	public void resolveDependencies() {
+		for (String pName : packages.keySet()) {
+			AidaPackage apackage = packages.get(pName);
+			apackage.resolveDependencies(this);
+		}
 	}
 }

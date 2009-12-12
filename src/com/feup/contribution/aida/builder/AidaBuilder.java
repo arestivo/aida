@@ -14,14 +14,18 @@ import org.eclipse.jdt.core.IAnnotation;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMemberValuePair;
+import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.internal.compiler.ast.ForeachStatement;
 
 import com.feup.contribution.aida.AidaPlugin;
 import com.feup.contribution.aida.project.AidaPackage;
 import com.feup.contribution.aida.project.AidaProject;
+import com.feup.contribution.aida.project.AidaUnit;
 
 public class AidaBuilder extends IncrementalProjectBuilder {
 
@@ -56,26 +60,41 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 
 	protected String getPackageName(ICompilationUnit cu) {
 		try {
+			if (cu.getPackageDeclarations().length==0) return "default";
+			return cu.getPackageDeclarations()[0].getElementName();
+		} catch (JavaModelException e) {}
+		return "unknown";
+	}
+	
+	protected String getPackageLabel(ICompilationUnit cu) {
+		try {
 			for (IAnnotation annotation : cu.getTypes()[0].getAnnotations()) {
 				if (annotation.getElementName().equals("PackageName")) {
 						for (IMemberValuePair pair : annotation.getMemberValuePairs()) {
 							if (pair.getMemberName().equals("value")) return (String) pair.getValue();
 						}
 				}
-			} 
-			if (cu.getPackageDeclarations().length==0) return "default";
-			return cu.getPackageDeclarations()[0].getElementName();
-		} catch (Exception e) {}
-		return "unknown";
+			}
+		} catch (JavaModelException e) {} 
+		return getPackageName(cu);
 	}
 	
 	void checkJava(IResource resource) {
 		if (resource instanceof IFile && resource.getName().endsWith(".java")) {
 			ICompilationUnit cu = (ICompilationUnit) JavaCore.create(resource);
 			AidaProject project = AidaProject.getProject(getProject().getName());
-			AidaPackage apackage = project.getPackage(getPackageName(cu));
+			AidaPackage apackage = project.getPackage(getPackageLabel(cu));
 
-			apackage.addUnit(cu.findPrimaryType().getElementName(), resource);
+			AidaUnit aidaUnit = apackage.addUnit(cu.findPrimaryType().getElementName(), getPackageName(cu)+"."+cu.findPrimaryType().getElementName(), resource);
+
+			ASTParser parser = ASTParser.newParser(AST.JLS3);
+			parser.setSource(cu);
+			parser.setResolveBindings(true);
+			CompilationUnit astRoot = (CompilationUnit) parser.createAST(null);
+		   
+			AidaASTVisitor aidaVisitor = new AidaASTVisitor();
+			astRoot.accept(aidaVisitor);
+			aidaUnit.addReferencedUnits(aidaVisitor.getUnitNames());
 		}
 	}
 
@@ -92,6 +111,7 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 			AidaProject project = AidaProject.getProject(getProject().getName());
 			project.reset();
 			getProject().accept(new ResourceVisitor());
+			project.resolveDependencies();
 			project.logStructure();
 		} catch (CoreException e) {
 
