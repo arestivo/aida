@@ -43,7 +43,7 @@ public class AidaPackage {
 			LinkedList<String> referencedUnits = unit.getReferencedUnits();
 			for (String rUnit : referencedUnits) {
 				AidaPackage apackage = project.getPackageForUnit(rUnit);
-				if (apackage != null) referencedPackages.add(apackage);
+				if (apackage != null && apackage != this) referencedPackages.add(apackage);
 			}
 		}
 	}

@@ -49,9 +49,6 @@ public class AidaProject {
 		for (String packageName : packages.keySet()) {
 			AidaPlugin.getDefault().log(packageName);
 			AidaPackage apackage = packages.get(packageName);
-			for (String unitName : apackage.getUnitNames()) {
-				AidaPlugin.getDefault().log("  " + unitName);
-			}
 			LinkedList<AidaPackage> referenced = apackage.getReferencedPackages();
 			for (AidaPackage aidaPackage : referenced) {
 				AidaPlugin.getDefault().log(" -> " + aidaPackage.getName());				
@@ -60,11 +57,9 @@ public class AidaProject {
 	}
 
 	public AidaPackage getPackageForUnit(String unitName) {
-		AidaPlugin.getDefault().log("Looking for " + unitName);
 		for (String pName : packages.keySet()) {
 			AidaPackage apackage = packages.get(pName);
 			for (String unit : apackage.getUnitNames()) {
-				AidaPlugin.getDefault().log("Found " + unit);
 				if (unit.equals(unitName)) return apackage;
 			}
 		}
