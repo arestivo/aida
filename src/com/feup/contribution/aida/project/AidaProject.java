@@ -2,6 +2,10 @@ package com.feup.contribution.aida.project;
 
 import java.util.HashMap;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.JavaCore;
+
 import com.feup.contribution.aida.AidaPlugin;
 
 public class AidaProject {
@@ -38,5 +42,15 @@ public class AidaProject {
 
 	public void reset() {
 		packages.clear();		
+	}
+
+	public void logStructure() {
+		for (String packageName : packages.keySet()) {
+			AidaPlugin.getDefault().log(packageName);
+			AidaPackage apackage = packages.get(packageName);
+			for (String unitName : apackage.getUnitNames()) {
+				AidaPlugin.getDefault().log("  " + unitName);
+			}
+		}		
 	}
 }

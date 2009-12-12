@@ -74,6 +74,8 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 			ICompilationUnit cu = (ICompilationUnit) JavaCore.create(resource);
 			AidaProject project = AidaProject.getProject(getProject().getName());
 			AidaPackage apackage = project.getPackage(getPackageName(cu));
+
+			apackage.addUnit(cu.findPrimaryType().getElementName(), resource);
 		}
 	}
 
@@ -90,6 +92,7 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 			AidaProject project = AidaProject.getProject(getProject().getName());
 			project.reset();
 			getProject().accept(new ResourceVisitor());
+			project.logStructure();
 		} catch (CoreException e) {
 
 		}
