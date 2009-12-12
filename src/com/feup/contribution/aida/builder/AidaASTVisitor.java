@@ -13,9 +13,9 @@ public class AidaASTVisitor extends ASTVisitor{
 	private LinkedList<String> unitNames = new LinkedList<String>();
 
 	@Override
-	public void endVisit(ConstructorInvocation node) {
+	public boolean visit(ConstructorInvocation node) {
 		addBinding(node.resolveConstructorBinding().getDeclaringClass());
-		super.endVisit(node);
+		return super.visit(node);
 	}
 
 	@Override
