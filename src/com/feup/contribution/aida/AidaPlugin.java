@@ -1,26 +1,39 @@
 package com.feup.contribution.aida;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractUIPlugin {
+public class AidaPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.feup.contribution.aida";
 
 	// The shared instance
-	private static Activator plugin;
+	private static AidaPlugin plugin;
+
+	private MessageConsoleStream log;
 	
 	/**
 	 * The constructor
 	 */
-	public Activator() {
+	public AidaPlugin() {
+		MessageConsole aidaConsole = new MessageConsole("Aida Log", null);
+		ConsolePlugin.getDefault().getConsoleManager().addConsoles(new IConsole[] { aidaConsole });
+		log = aidaConsole.newMessageStream();
 	}
 
+	public void log(String message) {
+		log.println(message);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
@@ -44,9 +57,10 @@ public class Activator extends AbstractUIPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static Activator getDefault() {
+	public static AidaPlugin getDefault() {
 		return plugin;
 	}
+	
 
 	/**
 	 * Returns an image descriptor for the image file at the given
