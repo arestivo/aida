@@ -6,7 +6,6 @@ public class AidaPackage {
 	private String name;
 	
 	public AidaPackage(String name) {
-		AidaPlugin.getDefault().log(name + " package initialized");
 		this.name = name;
 	}
 

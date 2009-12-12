@@ -19,7 +19,7 @@
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="com.feup.contribution.aida.builder.AidaNature">
+               class="com.feup.contribution.aida.nature.AidaNature">
          </run>
       </runtime>
       <builder
@@ -35,7 +35,7 @@
             id="com.feup.contribution.aida.contribution1">
          <action
                label="Add/Remove Aida Support"
-               class="com.feup.contribution.aida.builder.ToggleNatureAction"
+               class="com.feup.contribution.aida.nature.ToggleNatureAction"
                menubarPath="additions"
                enablesFor="+"
                id="com.feup.contribution.aida.addRemoveNatureAction">
@@ -54,4 +54,10 @@
       </persistent>
    </extension>
 
+  <extension point="org.eclipse.jdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+            id="AIDA_CONTAINER"
+            class="com.feup.contribution.aida.container.AidaClasspathContainerInitializer"/>
+  </extension>
+  
 </plugin>

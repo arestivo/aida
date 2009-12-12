@@ -1,11 +1,17 @@
-package com.feup.contribution.aida.builder;
+package com.feup.contribution.aida.nature;
 
+import java.util.ArrayList; 
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -13,6 +19,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+
+import com.feup.contribution.aida.container.AidaClasspathContainer;
 
 public class ToggleNatureAction implements IObjectActionDelegate {
 
@@ -73,6 +81,23 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 			newNatures[natures.length] = AidaNature.NATURE_ID;
 			description.setNatureIds(newNatures);
 			project.setDescription(description, null);
+			
+			// Add Classpath
+			
+   		    IJavaProject javaProject = (IJavaProject) JavaCore.create((IProject) project);
+			  
+		    IClasspathEntry[] rawClasspath = javaProject.getRawClasspath();
+
+		    List<IClasspathEntry> newEntries = new ArrayList<IClasspathEntry>(rawClasspath.length+1);
+		    for(IClasspathEntry e: rawClasspath) newEntries.add(e);
+
+		    newEntries.add(JavaCore.newContainerEntry(AidaClasspathContainer.CONTAINER_ID));
+
+		    IClasspathEntry[] newEntriesArray = new IClasspathEntry[newEntries.size()];
+		    newEntriesArray = (IClasspathEntry[])newEntries.toArray(newEntriesArray);
+		    javaProject.setRawClasspath(newEntriesArray, null);
+		      
+		    javaProject.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 		} catch (CoreException e) {
 		}
 	}

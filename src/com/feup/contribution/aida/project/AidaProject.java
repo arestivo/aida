@@ -11,7 +11,6 @@ public class AidaProject {
 	private String name;
 
 	protected AidaProject(String name) {
-		AidaPlugin.getDefault().log(name + " project initialized");
 		this.setName(name);
 	}
 	
@@ -35,5 +34,9 @@ public class AidaProject {
 
 	public String getName() {
 		return name;
+	}
+
+	public void reset() {
+		packages.clear();		
 	}
 }
