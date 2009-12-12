@@ -16,6 +16,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.ASTParser;
 
 import com.feup.contribution.aida.AidaPlugin;
+import com.feup.contribution.aida.project.AidaPackage;
 import com.feup.contribution.aida.project.AidaProject;
 
 public class AidaBuilder extends IncrementalProjectBuilder {
@@ -51,7 +52,6 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 
 	protected String getPackageName(ICompilationUnit cu) {
 		try {
-			String packageName;
 			if (cu.getPackageDeclarations().length==0) return "default";
 			return cu.getPackageDeclarations()[0].getElementName();
 		} catch (Exception e) {
@@ -63,7 +63,7 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 		if (resource instanceof IFile && resource.getName().endsWith(".java")) {
 			ICompilationUnit cu = (ICompilationUnit) JavaCore.create(resource);
 			AidaProject project = AidaProject.getProject(resource.getProject().getName());
-			project.getPackage(getPackageName(cu));
+			AidaPackage apackage = project.getPackage(getPackageName(cu));
 		}
 	}
 
