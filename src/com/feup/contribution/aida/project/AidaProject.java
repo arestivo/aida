@@ -1,11 +1,9 @@
 package com.feup.contribution.aida.project;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
-
-import org.eclipse.core.resources.IResource;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.JavaCore;
 
 import com.feup.contribution.aida.AidaPlugin;
 
@@ -46,24 +44,28 @@ public class AidaProject {
 	}
 
 	public void logStructure() {
+		AidaPlugin.getDefault().log(" ============================ ");
 		for (String packageName : packages.keySet()) {
-			AidaPlugin.getDefault().log(packageName);
+			String l = packageName + " -> ";
 			AidaPackage apackage = packages.get(packageName);
 			LinkedList<AidaPackage> referenced = apackage.getReferencedPackages();
 			for (AidaPackage aidaPackage : referenced) {
-				AidaPlugin.getDefault().log(" -> " + aidaPackage.getName());				
+				l += ", " + aidaPackage.getName();
 			}
+			AidaPlugin.getDefault().log(l);
 		}		
 	}
 
-	public AidaPackage getPackageForUnit(String unitName) {
+	public Collection<AidaPackage> getPackagesForUnit(String unitName) {
+		HashSet<AidaPackage> ret = new HashSet<AidaPackage>();
 		for (String pName : packages.keySet()) {
 			AidaPackage apackage = packages.get(pName);
 			for (String unit : apackage.getUnitNames()) {
-				if (unit.equals(unitName)) return apackage;
+				if (unit.equals(unitName)) ret.add(apackage);
+				if (unit.startsWith(unitName.substring(0, unitName.length()-1))) ret.add(apackage);
 			}
 		}
-		return null;
+		return ret;
 	}
 
 	public void resolveDependencies() {

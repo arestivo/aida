@@ -3,7 +3,6 @@ package com.feup.contribution.aida.builder;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -34,9 +33,9 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 
 	public static final String BUILDER_ID = "com.feup.contribution.aida.aidaBuilder";
 
-	private static final String MARKER_TYPE = "com.feup.contribution.aida.aidaProblem";
+//	private static final String MARKER_TYPE = "com.feup.contribution.aida.aidaProblem";
 	
-	private void addMarker(IFile file, String message, int lineNumber, int severity) {
+/*	private void addMarker(IFile file, String message, int lineNumber, int severity) {
 		try {
 			IMarker marker = file.createMarker(MARKER_TYPE);
 			marker.setAttribute(IMarker.MESSAGE, message);
@@ -47,7 +46,8 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 			marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
 		} catch (CoreException e) {
 		}
-	}
+	}*/
+	
 	@SuppressWarnings("unchecked")
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
 		fullBuild(monitor);
@@ -94,13 +94,13 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	private void deleteMarkers(IFile file) {
+/*	private void deleteMarkers(IFile file) {
 		try {
 			file.deleteMarkers(MARKER_TYPE, false, IResource.DEPTH_ZERO);
 		} catch (CoreException ce) {
 			
 		}
-	}
+	}*/
 
 	protected void fullBuild(final IProgressMonitor monitor) throws CoreException {
 		try {

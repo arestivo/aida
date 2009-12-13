@@ -1,6 +1,8 @@
 package com.feup.contribution.aida.project;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -40,12 +42,13 @@ public class AidaPackage {
 	public void resolveDependencies(AidaProject project) {
 		for (String unitName : units.keySet()) {
 			AidaUnit unit = units.get(unitName);
-			LinkedList<String> referencedUnits = unit.getReferencedUnits();
+			HashSet<String> referencedUnits = unit.getReferencedUnits();
 			for (String rUnit : referencedUnits) {
-				AidaPackage apackage = project.getPackageForUnit(rUnit);
-				if (apackage != null && apackage != this && !referencedPackages.contains(apackage)) referencedPackages.add(apackage);
+				Collection<AidaPackage> packages = project.getPackagesForUnit(rUnit);
+				referencedPackages.addAll(packages);
 			}
 		}
+		referencedPackages.remove(this);
 	}
 
 	public LinkedList<AidaPackage> getReferencedPackages() {

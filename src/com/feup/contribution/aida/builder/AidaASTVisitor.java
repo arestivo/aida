@@ -1,26 +1,26 @@
 package com.feup.contribution.aida.builder;
 
-import java.util.LinkedList;
+import java.util.HashSet;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-import com.feup.contribution.aida.AidaPlugin;
-
 public class AidaASTVisitor extends ASTVisitor{
-	private LinkedList<String> unitNames = new LinkedList<String>();
+	private HashSet<String> unitNames = new HashSet<String>();
 	
 	@Override
 	public boolean visit(ImportDeclaration node) {
 		IBinding binding = node.resolveBinding();
-		if (binding instanceof ITypeBinding) {
+		if (binding instanceof ITypeBinding) 
 			addBinding(((ITypeBinding) binding));
-		}
+		if (binding instanceof IPackageBinding)
+			addBinding(((IPackageBinding) binding));
 		return super.visit(node);
 	}
 
@@ -51,8 +51,14 @@ public class AidaASTVisitor extends ASTVisitor{
 		String pn = binding.getPackage().getName();
 		unitNames.add(pn+"."+cn);
 	}
+
+	private void addBinding(IPackageBinding binding) {
+		if (binding == null) return;
+		String pn = binding.getName();
+		unitNames.add(pn+".*");
+	}
 	
-	public LinkedList<String> getUnitNames() {
+	public HashSet<String> getUnitNames() {
 		return unitNames;
 	}
 }

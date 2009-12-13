@@ -1,6 +1,6 @@
 package com.feup.contribution.aida.project;
 
-import java.util.LinkedList;
+import java.util.HashSet;
 
 import org.eclipse.core.resources.IResource;
 
@@ -8,7 +8,7 @@ public class AidaUnit {
 	private String name;
 	private IResource resource;
 	private String completeName;
-	private LinkedList<String> referencedUnits;
+	private HashSet<String> referencedUnits;
 
 	public AidaUnit(String name, String completeName, IResource resource) {
 		this.completeName = completeName;
@@ -36,11 +36,11 @@ public class AidaUnit {
 		return completeName;
 	}
 
-	public void addReferencedUnits(LinkedList<String> unitNames) {
+	public void addReferencedUnits(HashSet<String> unitNames) {
 		this.referencedUnits = unitNames;		
 	}
 
-	public LinkedList<String> getReferencedUnits() {
+	public HashSet<String> getReferencedUnits() {
 		return referencedUnits;
 	}	
 }
