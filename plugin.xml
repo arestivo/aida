@@ -26,19 +26,31 @@
             id="com.feup.contribution.aida.aidaBuilder">
       </builder>
    </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
+   <extension point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="true"
             objectClass="org.eclipse.core.resources.IProject"
             nameFilter="*"
             id="com.feup.contribution.aida.contribution1">
+		 <menu 
+		 	id="com.feup.contribution.aida.aidamenu"
+		 	label="Aida"
+		 	path="additions">
+		 	<separator name="slot1" />
+		 </menu>
          <action
                label="Add/Remove Aida Support"
                class="com.feup.contribution.aida.nature.ToggleNatureAction"
-               menubarPath="additions"
+               menubarPath="com.feup.contribution.aida.aidamenu/slot1"
                enablesFor="+"
                id="com.feup.contribution.aida.addRemoveNatureAction">
+         </action>
+         <action
+               label="Run Tests"
+               class="com.feup.contribution.aida.tests.RunTestsAction"
+               menubarPath="com.feup.contribution.aida.aidamenu/slot1"
+               enablesFor="+"
+               id="com.feup.contribution.aida.runTestsAction">
          </action>
       </objectContribution>
    </extension>
