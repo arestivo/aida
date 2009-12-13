@@ -1,20 +1,22 @@
 package com.feup.contribution.aida.builder;
 
-import java.util.LinkedList; 
+import java.util.LinkedList;  
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
+import com.feup.contribution.aida.AidaPlugin;
+
 public class AidaASTVisitor extends ASTVisitor{
 	private LinkedList<String> unitNames = new LinkedList<String>();
-
+	
 	@Override
-	public boolean visit(ConstructorInvocation node) {
-		addBinding(node.resolveConstructorBinding().getDeclaringClass());
+	public boolean visit(ClassInstanceCreation node) {
+		addBinding(node.resolveTypeBinding());
 		return super.visit(node);
 	}
 
