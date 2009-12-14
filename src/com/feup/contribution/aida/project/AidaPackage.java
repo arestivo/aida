@@ -12,6 +12,7 @@ public class AidaPackage {
 	private String name;
 	private HashMap<String, AidaUnit> units = new HashMap<String, AidaUnit>();
 	private LinkedList<AidaPackage> referencedPackages = new LinkedList<AidaPackage>();
+	private LinkedList<AidaPackage> referencedByPackages = new LinkedList<AidaPackage>();
 	
 	public AidaPackage(String name) {
 		this.name = name;
@@ -46,12 +47,27 @@ public class AidaPackage {
 			for (String rUnit : referencedUnits) {
 				Collection<AidaPackage> packages = project.getPackagesForUnit(rUnit);
 				referencedPackages.addAll(packages);
+				for (AidaPackage aidaPackage : packages) {
+					aidaPackage.addReferencedBy(this);
+				}
 			}
 		}
 		referencedPackages.remove(this);
 	}
 
+	private void addReferencedBy(AidaPackage aidaPackage) {
+		if (this != aidaPackage) referencedByPackages.add(aidaPackage);
+	}
+
 	public LinkedList<AidaPackage> getReferencedPackages() {
 		return referencedPackages;
+	}
+
+	public LinkedList<AidaPackage> getReferencedByPackages() {
+		return referencedByPackages;
+	}
+	
+	public LinkedList<AidaUnit> getUnits() {
+		return new LinkedList<AidaUnit>(units.values());
 	}
 }

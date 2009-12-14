@@ -26,7 +26,6 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
-import com.feup.contribution.aida.AidaPlugin;
 import com.feup.contribution.aida.project.AidaPackage;
 import com.feup.contribution.aida.project.AidaProject;
 import com.feup.contribution.aida.project.AidaUnit;
@@ -113,20 +112,34 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 	protected void fullBuild(final IProgressMonitor monitor) throws CoreException {
 		try {
 			AidaProject project = AidaProject.getProject(getProject().getName());
-			project.reset();
-			getProject().accept(new ResourceVisitor());
+ 	        monitor.beginTask("Aida Compile", 4);
 
+ 	        monitor.subTask("Preparing");
+			project.reset();
+	        monitor.worked(1);
+
+ 	        monitor.subTask("Compiling");
+	        getProject().accept(new ResourceVisitor());
+	        monitor.worked(1);
+
+ 	        monitor.subTask("Checking Advises");
 		    checkAdvises(project);
+	        monitor.worked(1);
 		    
+ 	        monitor.subTask("Resolving Dependencies");
 			project.resolveDependencies();
-			project.logStructure();
+	        monitor.worked(1);
+
+	        monitor.done();
+	        
+	        project.logStructure();
 		} catch (CoreException e) {
 
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private void checkAdvises(AidaProject project) throws JavaModelException {
+	private void checkAdvises(AidaProject project) throws CoreException {
 		AJProjectModelFacade model = AJProjectModelFactory.getInstance().getModelForProject(getProject());
 		if (model.hasModel()) {
 			AJRelationshipType[] relTypes = {AJRelationshipManager.ADVISES};

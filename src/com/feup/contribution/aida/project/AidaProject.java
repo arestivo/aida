@@ -74,4 +74,8 @@ public class AidaProject {
 			apackage.resolveDependencies(this);
 		}
 	}
+
+	public LinkedList<AidaPackage> getPackages() {
+		return new LinkedList<AidaPackage>(packages.values());
+	}
 }

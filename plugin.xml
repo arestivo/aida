@@ -47,7 +47,7 @@
          </action>
          <action
                label="Run Tests"
-               class="com.feup.contribution.aida.tests.RunTestsAction"
+               class="com.feup.contribution.aida.tester.RunTestsAction"
                menubarPath="com.feup.contribution.aida.aidamenu/slot1"
                enablesFor="+"
                id="com.feup.contribution.aida.runTestsAction">

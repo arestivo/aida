@@ -1,16 +1,18 @@
-package com.feup.contribution.aida.tests;
+package com.feup.contribution.aida.tester;
 
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+
+import com.feup.contribution.aida.project.AidaProject;
 
 public class RunTestsAction implements IObjectActionDelegate {
 
@@ -39,9 +41,11 @@ public class RunTestsAction implements IObjectActionDelegate {
 			}
 		}
 	}
-
+	
 	private void runTests(IProject project) {
-		MessageDialog.openInformation(new Shell(), "Aida", "Not implemented yet");
+		IJavaProject javaProject = JavaCore.create(project);
+		AidaTester tester = new AidaTester(AidaProject.getProject(project.getName()), javaProject);
+		tester.setUpTest();
 	}
 
 	@Override
