@@ -9,10 +9,13 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 
 import com.feup.contribution.aida.project.AidaProject;
+import com.feup.contribution.aida.ui.AidaRunTestDialog;
 
 public class RunTestsAction implements IObjectActionDelegate {
 
@@ -25,8 +28,7 @@ public class RunTestsAction implements IObjectActionDelegate {
 	@Override
 	public void run(IAction action) {
 		if (selection instanceof IStructuredSelection) {
-			for (Iterator<?> it = ((IStructuredSelection) selection).iterator(); it
-					.hasNext();) {
+			for (Iterator<?> it = ((IStructuredSelection) selection).iterator(); it.hasNext();) {
 				Object element = it.next();
 				IProject project = null;
 				if (element instanceof IProject) {
@@ -42,10 +44,22 @@ public class RunTestsAction implements IObjectActionDelegate {
 		}
 	}
 	
-	private void runTests(IProject project) {
-		IJavaProject javaProject = JavaCore.create(project);
-		AidaTester tester = new AidaTester(AidaProject.getProject(project.getName()), javaProject);
-		tester.setUpTest();
+	private void runTests(final IProject project) {
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+		    public void run() {
+		            Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+
+		            AidaRunTestDialog dialog = new AidaRunTestDialog(activeShell);
+		            dialog.setProject(AidaProject.getProject(project.getName()));
+		            dialog.setBlockOnOpen(true);
+		            dialog.open();
+		            
+		            IJavaProject javaProject = JavaCore.create(project);
+		    		AidaTester tester = new AidaTester(AidaProject.getProject(project.getName()), javaProject);
+		    		tester.setUpTest();
+		    }
+		});		
+		
 	}
 
 	@Override
