@@ -9,6 +9,8 @@ import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 
+import com.feup.contribution.aida.AidaPlugin;
+
 public class AidaClasspathContainerInitializer extends ClasspathContainerInitializer{
 
 	@Override
@@ -19,7 +21,7 @@ public class AidaClasspathContainerInitializer extends ClasspathContainerInitial
 			container = new AidaClasspathContainer();
 	        JavaCore.setClasspathContainer(containerPath, new IJavaProject[] {project}, new IClasspathContainer[] {container}, null);
 		} catch (IOException e) {
-			e.printStackTrace();
+			AidaPlugin.getDefault().log(e.toString());
 		}
 	}
 

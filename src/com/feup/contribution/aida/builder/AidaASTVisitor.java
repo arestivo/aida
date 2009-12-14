@@ -41,7 +41,8 @@ public class AidaASTVisitor extends ASTVisitor{
 
 	@Override
 	public boolean visit(MethodInvocation node) {
-		addBinding(node.resolveMethodBinding().getDeclaringClass());
+		if (node.resolveMethodBinding() != null)
+			addBinding(node.resolveMethodBinding().getDeclaringClass());
 		return super.visit(node);
 	}
 

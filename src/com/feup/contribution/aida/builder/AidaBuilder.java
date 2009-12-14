@@ -1,7 +1,14 @@
 package com.feup.contribution.aida.builder;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
+import org.aspectj.asm.IRelationship;
+import org.eclipse.ajdt.core.model.AJProjectModelFacade;
+import org.eclipse.ajdt.core.model.AJProjectModelFactory;
+import org.eclipse.ajdt.core.model.AJRelationshipManager;
+import org.eclipse.ajdt.core.model.AJRelationshipType;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -11,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IAnnotation;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMemberValuePair;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
@@ -18,6 +26,7 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
+import com.feup.contribution.aida.AidaPlugin;
 import com.feup.contribution.aida.project.AidaPackage;
 import com.feup.contribution.aida.project.AidaProject;
 import com.feup.contribution.aida.project.AidaUnit;
@@ -26,7 +35,8 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 
 	class ResourceVisitor implements IResourceVisitor {
 		public boolean visit(IResource resource) {
-			checkJava(resource);
+			if (resource instanceof IFile && resource.getName().endsWith(".java")) checkJava(resource);
+			if (resource instanceof IFile && resource.getName().endsWith(".aj")) checkJava(resource);
 			return true;
 		}
 	}
@@ -76,22 +86,20 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 	}
 	
 	void checkJava(IResource resource) {
-		if (resource instanceof IFile && resource.getName().endsWith(".java")) {
-			ICompilationUnit cu = (ICompilationUnit) JavaCore.create(resource);
-			AidaProject project = AidaProject.getProject(getProject().getName());
-			AidaPackage apackage = project.getPackage(getPackageLabel(cu));
+		ICompilationUnit cu = (ICompilationUnit) JavaCore.create(resource);
+		AidaProject project = AidaProject.getProject(getProject().getName());
+		AidaPackage apackage = project.getPackage(getPackageLabel(cu));
 
-			AidaUnit aidaUnit = apackage.addUnit(cu.findPrimaryType().getElementName(), getPackageName(cu)+"."+cu.findPrimaryType().getElementName(), resource);
+		AidaUnit aidaUnit = apackage.addUnit(cu.findPrimaryType().getElementName(), getPackageName(cu)+"."+cu.findPrimaryType().getElementName(), resource);
 
-			ASTParser parser = ASTParser.newParser(AST.JLS3);
-			parser.setSource(cu);
-			parser.setResolveBindings(true);
-			CompilationUnit astRoot = (CompilationUnit) parser.createAST(null);
-		   
-			AidaASTVisitor aidaVisitor = new AidaASTVisitor();
-			astRoot.accept(aidaVisitor);
-			aidaUnit.addReferencedUnits(aidaVisitor.getUnitNames());
-		}
+		ASTParser parser = ASTParser.newParser(AST.JLS3);
+		parser.setSource(cu);
+		parser.setResolveBindings(true);
+		CompilationUnit astRoot = (CompilationUnit) parser.createAST(null);
+	   
+		AidaASTVisitor aidaVisitor = new AidaASTVisitor();
+		astRoot.accept(aidaVisitor);
+		aidaUnit.addReferencedUnits(aidaVisitor.getUnitNames());
 	}
 
 /*	private void deleteMarkers(IFile file) {
@@ -107,10 +115,35 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 			AidaProject project = AidaProject.getProject(getProject().getName());
 			project.reset();
 			getProject().accept(new ResourceVisitor());
+
+		    checkAdvises(project);
+		    
 			project.resolveDependencies();
 			project.logStructure();
 		} catch (CoreException e) {
 
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void checkAdvises(AidaProject project) throws JavaModelException {
+		AJProjectModelFacade model = AJProjectModelFactory.getInstance().getModelForProject(getProject());
+		if (model.hasModel()) {
+			AJRelationshipType[] relTypes = {AJRelationshipManager.ADVISES};
+		 	List<IRelationship> rels = (List<IRelationship>) model.getRelationshipsForProject(relTypes);
+		 	for (IRelationship rel : rels) {
+		 		IJavaElement source = model.programElementToJavaElement(rel.getSourceHandle());
+				ICompilationUnit scu = (ICompilationUnit) JavaCore.create(source.getUnderlyingResource());
+		 		HashSet<String> unitNames = new HashSet<String>();
+		 		for (String targetHandle : (Iterable<String>) rel.getTargets()) {
+		 			IJavaElement target = model.programElementToJavaElement(targetHandle);
+					ICompilationUnit tcu = (ICompilationUnit) JavaCore.create(target.getUnderlyingResource());
+					String unitName = getPackageName(tcu) + "." + tcu.findPrimaryType().getElementName(); 
+					unitNames.add(unitName);
+		 		}
+		 		String unitName = getPackageName(scu)+"."+scu.findPrimaryType().getElementName();
+		 		project.getPackage(getPackageLabel(scu)).getUnit(unitName).addReferencedUnits(unitNames);
+		 	}
 		}
 	}
 }
