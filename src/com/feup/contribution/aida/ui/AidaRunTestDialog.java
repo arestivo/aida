@@ -32,7 +32,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 	public void create() {
 		super.create();
 		setTitle("Run Aida Tests");
-		setMessage("Select the packages you want to test and click Run Tests");
+		setMessage("Select the packages you want to test and click \"Run Tests\". Packages required for a selected package will be automatically selected.");
 	}
 	
 	protected Control createDialogArea(Composite parent) {
@@ -57,15 +57,23 @@ public class AidaRunTestDialog extends TitleAreaDialog{
  		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 
+		setErrorMessage("At least one package must be selected");
+		
 	    table.addListener(SWT.Selection, new Listener() {
 	        public void handleEvent(Event event) {
 	          if (event.item instanceof TableItem) {
 	        	  TableItem item = (TableItem) event.item;
+
+	        	  setErrorMessage("At least one package must be selected");
+	        	  
+	        	  TableItem[] items = table.getItems();
+        		  for (int i = 0; i < items.length; i++)
+					if (items[i].getChecked()) setErrorMessage(null);
+	        	  
 		          if (event.detail == SWT.CHECK) {
 		        	  AidaPackage p = project.getPackage(item.getText());
 		        	  LinkedList<AidaPackage> referenced = p.getReferencedPackages();
 		        	  for (AidaPackage aidaPackage : referenced) {
-		        		  TableItem[] items = table.getItems();
 		        		  for (int i = 0; i < items.length; i++) {
 							if (items[i].getText().equals(aidaPackage.getName()))
 									items[i].setChecked(true);
@@ -75,7 +83,6 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 		        	  AidaPackage p = project.getPackage(item.getText());
 		        	  LinkedList<AidaPackage> referencedBy = p.getReferencedByPackages();
 		        	  for (AidaPackage aidaPackage : referencedBy) {
-		        		  TableItem[] items = table.getItems();
 		        		  for (int i = 0; i < items.length; i++) {
 							if (items[i].getText().equals(aidaPackage.getName()))
 									items[i].setChecked(false);
