@@ -30,6 +30,8 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 	public static final int CLOSE = 9999;
 	public static final int RUN = 9998;
 	
+	private LinkedList<AidaPackage> selected = new LinkedList<AidaPackage>();
+	
 	public AidaRunTestDialog(Shell parentShell) {
 		super(parentShell);
 	}
@@ -113,6 +115,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 	    runButton.addSelectionListener(new SelectionAdapter(){
 	      public void widgetSelected(SelectionEvent e) {
 	        setReturnCode(RUN);
+	        saveSelectedPackages();
 	        close();
 	      }
 	    });
@@ -132,15 +135,14 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 		this.project = project;		
 	}
 
-	public LinkedList<AidaPackage> getSelectedPackages() {
-		LinkedList<AidaPackage> selected = new LinkedList<AidaPackage>();
-
+	private void saveSelectedPackages() {
 		TableItem[] items = table.getItems();
-		for (int i = 0; i < items.length; i++) {
+		for (int i = 0; i < items.length; i++)
 			if (items[i].getChecked())
 				selected.add(project.getPackage(items[i].getText()));
-		}
-		
+	}
+
+	public LinkedList<AidaPackage> getSelectedPackages() {
 		return selected;
 	}
 }
