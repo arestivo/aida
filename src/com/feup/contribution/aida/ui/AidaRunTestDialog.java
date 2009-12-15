@@ -24,7 +24,8 @@ import com.feup.contribution.aida.project.AidaProject;
 
 public class AidaRunTestDialog extends TitleAreaDialog{
 
-	private Table table;
+	private Table packagesTable;
+	private Table testsTable;
 	private AidaProject project;
 	
 	public static final int CLOSE = 9999;
@@ -49,25 +50,25 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 		parent.setLayout(layout);
 
 	    GridData gd = new GridData(GridData.FILL_BOTH);
-		table = new Table(parent, SWT.CHECK);
-		table.setLayoutData(gd);
+		packagesTable = new Table(parent, SWT.CHECK);
+		packagesTable.setLayoutData(gd);
 	    
-		TableColumn packageColumn = new TableColumn(table, SWT.LEFT | SWT.BORDER | SWT.H_SCROLL);
+		TableColumn packageColumn = new TableColumn(packagesTable, SWT.LEFT | SWT.BORDER | SWT.H_SCROLL);
 		packageColumn.setWidth(300);
 		packageColumn.setText("Packages");
 
 		LinkedList<AidaPackage> packages = project.getPackages();
 		for (AidaPackage aidaPackage : packages) {
-			TableItem item = new TableItem(table, SWT.NONE);
+			TableItem item = new TableItem(packagesTable, SWT.NONE);
 			item.setText(aidaPackage.getName());			
 		}
 		
- 		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
+ 		packagesTable.setHeaderVisible(true);
+		packagesTable.setLinesVisible(true);
 
 		setErrorMessage("At least one package must be selected");
 		
-	    table.addListener(SWT.Selection, new Listener() {
+	    packagesTable.addListener(SWT.Selection, new Listener() {
 	        public void handleEvent(Event event) {
 	          if (event.item instanceof TableItem) {
 	        	  TableItem item = (TableItem) event.item;
@@ -75,7 +76,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 	        	  setErrorMessage("At least one package must be selected");
 				  getButton(RUN).setEnabled(false);
 	        	  
-	        	  TableItem[] items = table.getItems();
+	        	  TableItem[] items = packagesTable.getItems();
         		  for (int i = 0; i < items.length; i++)
 					if (items[i].getChecked()) {
 						setErrorMessage(null);
@@ -105,6 +106,20 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 	        }
 	    });
 		
+	    testsTable = new Table(parent, SWT.LEFT | SWT.BORDER | SWT.H_SCROLL);
+
+	    TableColumn componentColumn = new TableColumn(packagesTable, SWT.LEFT | SWT.BORDER | SWT.H_SCROLL);
+	    componentColumn.setWidth(150);
+	    componentColumn.setText("Packages");
+
+		TableColumn testColumn = new TableColumn(packagesTable, SWT.LEFT | SWT.BORDER | SWT.H_SCROLL);
+	    testColumn.setWidth(50);
+		testColumn.setText("Tests");
+
+	    TableColumn resultColumn = new TableColumn(packagesTable, SWT.LEFT | SWT.BORDER | SWT.H_SCROLL);
+		resultColumn.setWidth(100);
+		resultColumn.setText("Result");
+
 		return parent;
 	}
 
@@ -136,7 +151,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 	}
 
 	private void saveSelectedPackages() {
-		TableItem[] items = table.getItems();
+		TableItem[] items = packagesTable.getItems();
 		for (int i = 0; i < items.length; i++)
 			if (items[i].getChecked())
 				selected.add(project.getPackage(items[i].getText()));
