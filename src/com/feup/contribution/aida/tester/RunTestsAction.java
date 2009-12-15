@@ -1,6 +1,7 @@
 package com.feup.contribution.aida.tester;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
@@ -14,6 +15,8 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
+import com.feup.contribution.aida.AidaPlugin;
+import com.feup.contribution.aida.project.AidaPackage;
 import com.feup.contribution.aida.project.AidaProject;
 import com.feup.contribution.aida.ui.AidaRunTestDialog;
 
@@ -53,10 +56,15 @@ public class RunTestsAction implements IObjectActionDelegate {
 		            dialog.setProject(AidaProject.getProject(project.getName()));
 		            dialog.setBlockOnOpen(true);
 		            dialog.open();
-		            
-		            IJavaProject javaProject = JavaCore.create(project);
-		    		AidaTester tester = new AidaTester(AidaProject.getProject(project.getName()), javaProject);
-		    		tester.setUpTest();
+
+		            if (dialog.getReturnCode() == AidaRunTestDialog.RUN) {
+			            IJavaProject javaProject = JavaCore.create(project);
+			    		AidaTester tester = new AidaTester(AidaProject.getProject(project.getName()), javaProject);
+//			    		tester.setUpTest();
+			    		
+			    		LinkedList<AidaPackage> packages = dialog.getSelectedPackages();
+			    		AidaPlugin.getDefault().log(packages.toString());
+		            }
 		    }
 		});		
 		

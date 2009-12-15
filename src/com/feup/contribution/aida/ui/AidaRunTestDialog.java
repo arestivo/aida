@@ -4,8 +4,11 @@ import java.util.LinkedList;
 
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
@@ -23,6 +26,9 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 
 	private Table table;
 	private AidaProject project;
+	
+	public static final int CLOSE = 9999;
+	public static final int RUN = 9998;
 	
 	public AidaRunTestDialog(Shell parentShell) {
 		super(parentShell);
@@ -44,7 +50,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 		table = new Table(parent, SWT.CHECK);
 		table.setLayoutData(gd);
 	    
-		TableColumn packageColumn = new TableColumn(table, SWT.LEFT | SWT.BORDER);
+		TableColumn packageColumn = new TableColumn(table, SWT.LEFT | SWT.BORDER | SWT.H_SCROLL);
 		packageColumn.setWidth(300);
 		packageColumn.setText("Packages");
 
@@ -65,10 +71,14 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 	        	  TableItem item = (TableItem) event.item;
 
 	        	  setErrorMessage("At least one package must be selected");
+				  getButton(RUN).setEnabled(false);
 	        	  
 	        	  TableItem[] items = table.getItems();
         		  for (int i = 0; i < items.length; i++)
-					if (items[i].getChecked()) setErrorMessage(null);
+					if (items[i].getChecked()) {
+						setErrorMessage(null);
+						getButton(RUN).setEnabled(true);
+					}
 	        	  
 		          if (event.detail == SWT.CHECK) {
 		        	  AidaPackage p = project.getPackage(item.getText());
@@ -96,8 +106,41 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 		return parent;
 	}
 
+	protected void createButtonsForButtonBar(Composite parent) {
+	    Button runButton = createButton(parent, RUN, "Run Tests", true);
+	    runButton.setEnabled(false);
+
+	    runButton.addSelectionListener(new SelectionAdapter(){
+	      public void widgetSelected(SelectionEvent e) {
+	        setReturnCode(RUN);
+	        close();
+	      }
+	    });
+
+	    Button closeButton = createButton(parent, CLOSE, "Close", false);
+
+	    closeButton.addSelectionListener(new SelectionAdapter(){
+	      public void widgetSelected(SelectionEvent e) {
+	        setReturnCode(CLOSE);
+	        close();
+	      }
+	    });
+
+	  }
+	
 	public void setProject(AidaProject project) {
-		this.project = project;
+		this.project = project;		
+	}
+
+	public LinkedList<AidaPackage> getSelectedPackages() {
+		LinkedList<AidaPackage> selected = new LinkedList<AidaPackage>();
+
+		TableItem[] items = table.getItems();
+		for (int i = 0; i < items.length; i++) {
+			if (items[i].getChecked())
+				selected.add(project.getPackage(items[i].getText()));
+		}
 		
+		return selected;
 	}
 }
