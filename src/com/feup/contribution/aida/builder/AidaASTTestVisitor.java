@@ -3,15 +3,15 @@ package com.feup.contribution.aida.builder;
 import java.util.HashSet;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 
 public class AidaASTTestVisitor extends ASTVisitor{
 	private HashSet<String> testNames = new HashSet<String>();
 	
 	@Override
-	public boolean visit(MethodInvocation node) {
-		if (node.resolveMethodBinding() != null)
-			testNames.add(node.resolveMethodBinding().getName());
+	public boolean visit(MethodDeclaration node) {
+		String name = node.getName().getFullyQualifiedName();
+		if (name.startsWith("test")) testNames.add(name);
 		return super.visit(node);
 	}
 

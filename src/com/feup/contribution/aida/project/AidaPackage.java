@@ -13,6 +13,7 @@ public class AidaPackage {
 	private HashMap<String, AidaUnit> units = new HashMap<String, AidaUnit>();
 	private LinkedList<AidaPackage> referencedPackages = new LinkedList<AidaPackage>();
 	private LinkedList<AidaPackage> referencedByPackages = new LinkedList<AidaPackage>();
+	private LinkedList<AidaTest> tests = new LinkedList<AidaTest>();
 	
 	public AidaPackage(String name) {
 		this.name = name;
@@ -69,5 +70,13 @@ public class AidaPackage {
 	
 	public LinkedList<AidaUnit> getUnits() {
 		return new LinkedList<AidaUnit>(units.values());
+	}
+
+	public void addTest(AidaTest aidaTest) {
+		tests.add(aidaTest);
+	}
+
+	public LinkedList<AidaTest> getTests() {
+		return tests;
 	}
 }

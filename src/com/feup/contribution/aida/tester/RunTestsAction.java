@@ -18,6 +18,7 @@ import org.eclipse.ui.PlatformUI;
 import com.feup.contribution.aida.AidaPlugin;
 import com.feup.contribution.aida.project.AidaPackage;
 import com.feup.contribution.aida.project.AidaProject;
+import com.feup.contribution.aida.project.AidaTest;
 import com.feup.contribution.aida.ui.AidaRunTestDialog;
 
 public class RunTestsAction implements IObjectActionDelegate {
@@ -63,7 +64,13 @@ public class RunTestsAction implements IObjectActionDelegate {
 //			    		tester.setUpTest();
 			    		
 			    		LinkedList<AidaPackage> packages = dialog.getSelectedPackages();
-			    		AidaPlugin.getDefault().log(packages.toString());
+			    		for (AidaPackage aidaPackage : packages) {
+				    		AidaPlugin.getDefault().log("Testing " + aidaPackage);
+							LinkedList<AidaTest> tests = aidaPackage.getTests();
+							for (AidaTest aidaTest : tests) {
+					    		AidaPlugin.getDefault().log("Run Test: " + aidaTest);
+							}
+						}
 		            }
 		    }
 		});		

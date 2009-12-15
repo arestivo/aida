@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.aspectj.asm.IRelationship;
-import org.aspectj.org.eclipse.jdt.core.IType;
 import org.eclipse.ajdt.core.model.AJProjectModelFacade;
 import org.eclipse.ajdt.core.model.AJProjectModelFactory;
 import org.eclipse.ajdt.core.model.AJRelationshipManager;
@@ -27,9 +26,9 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
-import com.feup.contribution.aida.AidaPlugin;
 import com.feup.contribution.aida.project.AidaPackage;
 import com.feup.contribution.aida.project.AidaProject;
+import com.feup.contribution.aida.project.AidaTest;
 import com.feup.contribution.aida.project.AidaUnit;
 
 public class AidaBuilder extends IncrementalProjectBuilder {
@@ -151,7 +150,10 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 		
 		AidaASTTestVisitor testVisitor = new AidaASTTestVisitor();
 		astRoot.accept(testVisitor);
-		AidaPlugin.getDefault().log("TESTS: " + testVisitor.getTestNames().toString());
+		
+		for (String test : testVisitor.getTestNames()) {
+			apackage.addTest(new AidaTest(test, resource));
+		}
 	}
 
 	protected void fullBuild(final IProgressMonitor monitor) throws CoreException {
