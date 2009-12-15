@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.aspectj.asm.IRelationship;
+import org.aspectj.org.eclipse.jdt.core.IType;
 import org.eclipse.ajdt.core.model.AJProjectModelFacade;
 import org.eclipse.ajdt.core.model.AJProjectModelFactory;
 import org.eclipse.ajdt.core.model.AJRelationshipManager;
@@ -26,6 +27,7 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
+import com.feup.contribution.aida.AidaPlugin;
 import com.feup.contribution.aida.project.AidaPackage;
 import com.feup.contribution.aida.project.AidaProject;
 import com.feup.contribution.aida.project.AidaUnit;
@@ -70,6 +72,29 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 		} catch (JavaModelException e) {}
 		return "unknown";
 	}
+
+	protected boolean isTestUnit(ICompilationUnit cu) {
+		try {
+			String parent = cu.findPrimaryType().getSuperclassName();
+			if (parent == null) return false;
+			if (parent.equals("TestCase")) return true;
+		} catch (JavaModelException e) {}
+
+		return false;
+	}
+
+	protected String getTestFor(ICompilationUnit cu) {
+		try {
+			for (IAnnotation annotation : cu.getTypes()[0].getAnnotations()) {
+				if (annotation.getElementName().equals("TestFor")) {
+						for (IMemberValuePair pair : annotation.getMemberValuePairs()) {
+							if (pair.getMemberName().equals("value")) return (String) pair.getValue();
+						}
+				}
+			}
+		} catch (JavaModelException e) {} 
+		return getPackageName(cu);
+	}
 	
 	protected String getPackageLabel(ICompilationUnit cu) {
 		try {
@@ -86,6 +111,9 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 	
 	void checkJava(IResource resource) {
 		ICompilationUnit cu = (ICompilationUnit) JavaCore.create(resource);
+		
+		if (isTestUnit(cu)) {checkTest(resource); return;}
+		
 		AidaProject project = AidaProject.getProject(getProject().getName());
 		AidaPackage apackage = project.getPackage(getPackageLabel(cu));
 
@@ -108,6 +136,23 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 			
 		}
 	}*/
+
+	private void checkTest(IResource resource) {
+		ICompilationUnit cu = (ICompilationUnit) JavaCore.create(resource);
+		
+		AidaProject project = AidaProject.getProject(getProject().getName());
+		AidaPackage apackage = project.getPackage(getTestFor(cu));
+		
+		if (apackage == null) return;
+
+		ASTParser parser = ASTParser.newParser(AST.JLS3);
+		parser.setSource(cu);
+		CompilationUnit astRoot = (CompilationUnit) parser.createAST(null);
+		
+		AidaASTTestVisitor testVisitor = new AidaASTTestVisitor();
+		astRoot.accept(testVisitor);
+		AidaPlugin.getDefault().log("TESTS: " + testVisitor.getTestNames().toString());
+	}
 
 	protected void fullBuild(final IProgressMonitor monitor) throws CoreException {
 		try {
