@@ -131,11 +131,11 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 		componentColumn.setText("Packages");
 
 		TableColumn testColumn = new TableColumn(testsTable, SWT.LEFT | SWT.BORDER | SWT.H_SCROLL);
-		testColumn.setWidth(50);
+		testColumn.setWidth(150);
 		testColumn.setText("Tests");
 
 		TableColumn resultColumn = new TableColumn(testsTable, SWT.LEFT | SWT.BORDER | SWT.H_SCROLL);
-		resultColumn.setWidth(100);
+		resultColumn.setWidth(50);
 		resultColumn.setText("Result");		
 
 		return parent;
@@ -179,7 +179,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 				final LinkedList<AidaComponent> components = AidaComponent.getOrderedComponents(selectedPackages);
 				for (AidaComponent aidaComponent : components) {
 					numberTests += aidaComponent.getNumberTests();
-					updater.addLine(aidaComponent.toString(), "0/" + numberTests, "Waiting");
+					updater.addLine(aidaComponent.toString(), numberTests);
 				}
 
 				int index = 0;
@@ -190,7 +190,17 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 					tester.setUpTest(currentComponents);
 					updater.update(index, 2, "Compiling");
 					tester.compile(aidaProject.getClasspath(project));
+
 					updater.update(index, 2, "Testing");
+					numberTests = 0;
+					for (AidaComponent aidaComponent2 : currentComponents)
+						numberTests += aidaComponent2.getNumberTests();
+
+					for (int i = 0 ; i <= numberTests; i++) {
+						Thread.sleep(100);
+						updater.updateBar(index, i);
+					}
+					
 					updater.update(index, 2, "Passed");
 					index++;
 				}
