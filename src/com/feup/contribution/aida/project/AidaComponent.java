@@ -123,4 +123,12 @@ public class AidaComponent {
 		return s;
 	}
 
+	public int getNumberTests() {
+		int total = 0;
+		for (AidaPackage apackage : components) {
+			total += apackage.getTests().size();
+		}
+		return total;
+	}
+
 }

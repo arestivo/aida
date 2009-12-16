@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.JavaModelException;
+
 import com.feup.contribution.aida.AidaPlugin;
 
 public class AidaProject {
@@ -78,4 +82,16 @@ public class AidaProject {
 	public LinkedList<AidaPackage> getPackages() {
 		return new LinkedList<AidaPackage>(packages.values());
 	}
+	
+	public String getClasspath(IJavaProject javaProject) {
+		 String cp = "";
+		 try {
+			 IClasspathEntry[] classpath = javaProject.getResolvedClasspath(false);
+			 for (IClasspathEntry classpathEntry : classpath) {
+				 if (cp.equals("")) cp = classpathEntry.getPath().toOSString();
+				 else cp += ":" + classpathEntry.getPath().toOSString();
+			 }
+		 } catch (JavaModelException e) { }
+		 return cp;
+	 }
 }

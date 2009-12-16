@@ -25,15 +25,13 @@ import com.feup.contribution.aida.project.AidaUnit;
 
 public class AidaTester {
 	private String details;
-	private final AidaProject aidaProject;
 	private final IJavaProject project;
 	
 	public AidaTester(AidaProject aidaProject, IJavaProject project) {
 		this.project = project;
-		this.aidaProject = aidaProject;
 	}
 
-	public void setUpTest() {
+	public void setUpTest(LinkedList<AidaComponent> components) {
 		try {
 			Runtime.getRuntime().exec("rm -Rf /tmp/aida").waitFor();
 		} catch (IOException e) {
@@ -42,9 +40,7 @@ public class AidaTester {
 			AidaPlugin.getDefault().log(e.toString());
 		}
 		new File("/tmp/aida/src/").mkdirs();
-		LinkedList<AidaComponent> components = AidaComponent.getOrderedComponents(aidaProject.getPackages());
 		for (AidaComponent aidaComponent : components) {
-			AidaPlugin.getDefault().log("C: " + aidaComponent);
 			String unitpath = project.getPath().toOSString();
 			for (AidaPackage aidaPackage : aidaComponent.getPackages()) {
 				for (AidaUnit unit : aidaPackage.getUnits()) {
@@ -81,7 +77,7 @@ public class AidaTester {
 			Runtime.getRuntime().exec("rm -Rf /tmp/aida/bin").waitFor();
 			
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("/tmp/aida/compile.sh")));
-			bw.write("ajc -d /tmp/aida/bin -source 1.5  -sourceroots /tmp/druid/src/ -verbose -classpath \"" + classpath + "\"");
+			bw.write("ajc -d /tmp/aida/bin -source 1.5  -sourceroots /tmp/aida/src/ -verbose -classpath \"" + classpath + "\"");
 			bw.close();
 			
 			new File("/tmp/aida/compile.sh").setExecutable(true);
@@ -95,7 +91,6 @@ public class AidaTester {
 	}
 
 	private void copy(File source, File dest) throws IOException {
-		AidaPlugin.getDefault().log("COPY " + source.getAbsolutePath() + " to " + dest.getAbsolutePath());
 		if (!source.getName().endsWith(".java") && !source.getName().endsWith(".aj")) return;
 		
 		InputStream in = new FileInputStream(source);
@@ -118,13 +113,13 @@ public class AidaTester {
 		try {
 			String unitname = method.getCompilationUnit().getPackageDeclarations()[0].getElementName();
 
-			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("/tmp/druid/bin/test.sh")));
-			bw.write("export CLASSPATH=" + classpath + "\ncd /tmp/druid/bin/\njunit -m " + unitname + "." + method.getParent().getElementName() + "." + method.getElementName());
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("/tmp/aida/bin/test.sh")));
+			bw.write("export CLASSPATH=" + classpath + "\ncd /tmp/aida/bin/\njunit -m " + unitname + "." + method.getParent().getElementName() + "." + method.getElementName());
 			bw.close();
 
-			new File("/tmp/druid/bin/test.sh").setExecutable(true);
+			new File("/tmp/aida/bin/test.sh").setExecutable(true);
 			
-			Process p = Runtime.getRuntime().exec("/tmp/druid/bin/test.sh");
+			Process p = Runtime.getRuntime().exec("/tmp/aida/bin/test.sh");
 			
 			String line;
 			BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
