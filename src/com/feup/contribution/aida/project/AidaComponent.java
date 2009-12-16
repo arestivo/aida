@@ -3,6 +3,8 @@ package com.feup.contribution.aida.project;
 import java.util.LinkedList;
 import java.util.Stack;
 
+import com.feup.contribution.aida.AidaPlugin;
+
 public class AidaComponent {
 	private LinkedList<AidaPackage> components = new LinkedList<AidaPackage>();
 	private LinkedList<AidaComponent> dependants = new LinkedList<AidaComponent>();
@@ -92,6 +94,7 @@ public class AidaComponent {
 		LinkedList<AidaPackage> depends = units.get(v).getReferencedByPackages();
 		for (int e = 0; e < depends.size(); e++){
 			int w = units.indexOf(depends.get(e));
+			if (w == -1) continue;
 			if (index[w]==-1) {
 				dfs(units, w, i, index, lowlink, s, instack, components);
 				lowlink[v] = Math.min(lowlink[v], lowlink[w]);

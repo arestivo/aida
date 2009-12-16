@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Aida
-Bundle-SymbolicName: lcom.feup.contribution.aida;singleton:=true
+Bundle-SymbolicName: com.feup.contribution.aida;singleton:=true
 Bundle-Version: 0.0.0.qualifier
 Bundle-Activator: com.feup.contribution.aida.AidaPlugin
 Bundle-Vendor: FEUP

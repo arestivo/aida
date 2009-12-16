@@ -44,7 +44,6 @@ public class AidaTester {
 			String unitpath = project.getPath().toOSString();
 			for (AidaPackage aidaPackage : aidaComponent.getPackages()) {
 				for (AidaUnit unit : aidaPackage.getUnits()) {
-					AidaPlugin.getDefault().log(unit.getCompleteName());
 					copyPackage(unitpath, unit);					
 				}
 			}

@@ -72,4 +72,12 @@ public class AidaPlugin extends AbstractUIPlugin {
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
+
+	public void logException(Exception e) {
+		log(e.toString());
+		StackTraceElement[] st = e.getStackTrace();
+		for (int i = 0; i < st.length; i++) {
+			log(st[i].toString());
+		}
+	}
 }
