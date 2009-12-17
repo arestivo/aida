@@ -1,9 +1,7 @@
 package com.feup.contribution.aida.project;
 
-import java.util.LinkedList;
+import java.util.LinkedList; 
 import java.util.Stack;
-
-import com.feup.contribution.aida.AidaPlugin;
 
 public class AidaComponent {
 	private LinkedList<AidaPackage> components = new LinkedList<AidaPackage>();

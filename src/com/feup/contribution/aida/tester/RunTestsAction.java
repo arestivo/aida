@@ -1,7 +1,6 @@
 package com.feup.contribution.aida.tester;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
@@ -15,10 +14,7 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
-import com.feup.contribution.aida.AidaPlugin;
-import com.feup.contribution.aida.project.AidaPackage;
 import com.feup.contribution.aida.project.AidaProject;
-import com.feup.contribution.aida.project.AidaTest;
 import com.feup.contribution.aida.ui.AidaRunTestDialog;
 
 public class RunTestsAction implements IObjectActionDelegate {
@@ -59,11 +55,6 @@ public class RunTestsAction implements IObjectActionDelegate {
 		            dialog.setBlockOnOpen(true);
 		            dialog.open();
 
-		            if (dialog.getReturnCode() == AidaRunTestDialog.RUN) {
-			    		AidaTester tester = new AidaTester(AidaProject.getProject(project.getName()), javaProject);
-//			    		tester.setUpTest();
-			    		
-		            }
 		    }
 		});		
 		

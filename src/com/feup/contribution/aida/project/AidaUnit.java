@@ -8,7 +8,7 @@ public class AidaUnit {
 	private String name;
 	private IResource resource;
 	private String completeName;
-	private HashSet<String> referencedUnits;
+	private HashSet<String> referencedUnits = new HashSet<String>();
 
 	public AidaUnit(String name, String completeName, IResource resource) {
 		this.completeName = completeName;
@@ -37,7 +37,7 @@ public class AidaUnit {
 	}
 
 	public void addReferencedUnits(HashSet<String> unitNames) {
-		this.referencedUnits = unitNames;		
+		this.referencedUnits.addAll(unitNames);
 	}
 
 	public HashSet<String> getReferencedUnits() {

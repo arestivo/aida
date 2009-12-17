@@ -20,6 +20,7 @@ import org.eclipse.jdt.core.IAnnotation;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMemberValuePair;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
@@ -75,7 +76,9 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 
 	protected boolean isTestUnit(ICompilationUnit cu) {
 		try {
-			String parent = cu.findPrimaryType().getSuperclassName();
+			IType pt = cu.findPrimaryType();
+			if (pt == null) return false;
+			String parent = pt.getSuperclassName();
 			if (parent == null) return false;
 			if (parent.equals("TestCase")) return true;
 		} catch (JavaModelException e) {}
@@ -98,19 +101,21 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 	
 	protected String getPackageLabel(ICompilationUnit cu) {
 		try {
-			for (IAnnotation annotation : cu.getTypes()[0].getAnnotations()) {
-				if (annotation.getElementName().equals("PackageName")) {
-						for (IMemberValuePair pair : annotation.getMemberValuePairs()) {
-							if (pair.getMemberName().equals("value")) return (String) pair.getValue();
-						}
+			if (cu.getTypes().length > 0)
+				for (IAnnotation annotation : cu.getTypes()[0].getAnnotations()) {
+					if (annotation.getElementName().equals("PackageName")) {
+							for (IMemberValuePair pair : annotation.getMemberValuePairs()) {
+								if (pair.getMemberName().equals("value")) return (String) pair.getValue();
+							}
+					}
 				}
-			}
 		} catch (JavaModelException e) {} 
 		return getPackageName(cu);
 	}
 	
 	void checkJava(IResource resource) {
 		ICompilationUnit cu = (ICompilationUnit) JavaCore.create(resource);
+		if (cu.findPrimaryType() == null) {AidaPlugin.getDefault().log("ECU: " + resource.getName()); return;}
 		
 		if (isTestUnit(cu)) {checkTest(resource); return;}
 		
@@ -179,9 +184,9 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 
 	        monitor.done();
 	        
-	        //project.logStructure();
-		} catch (CoreException e) {
-
+	        project.logStructure();
+		} catch (Exception e) {
+			AidaPlugin.getDefault().logException(e);
 		}
 	}
 

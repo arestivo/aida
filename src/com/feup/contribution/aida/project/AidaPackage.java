@@ -11,7 +11,7 @@ import org.eclipse.core.resources.IResource;
 public class AidaPackage {
 	private String name;
 	private HashMap<String, AidaUnit> units = new HashMap<String, AidaUnit>();
-	private LinkedList<AidaPackage> referencedPackages = new LinkedList<AidaPackage>();
+	private HashSet<AidaPackage> referencedPackages = new HashSet<AidaPackage>();
 	private LinkedList<AidaPackage> referencedByPackages = new LinkedList<AidaPackage>();
 	private LinkedList<AidaTest> tests = new LinkedList<AidaTest>();
 	
@@ -57,10 +57,11 @@ public class AidaPackage {
 	}
 
 	private void addReferencedBy(AidaPackage aidaPackage) {
+		if (referencedByPackages.contains(aidaPackage)) return;
 		if (this != aidaPackage) referencedByPackages.add(aidaPackage);
 	}
 
-	public LinkedList<AidaPackage> getReferencedPackages() {
+	public HashSet<AidaPackage> getReferencedPackages() {
 		return referencedPackages;
 	}
 

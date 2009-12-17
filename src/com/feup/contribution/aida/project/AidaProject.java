@@ -52,7 +52,7 @@ public class AidaProject {
 		for (String packageName : packages.keySet()) {
 			String l = packageName + " -> ";
 			AidaPackage apackage = packages.get(packageName);
-			LinkedList<AidaPackage> referenced = apackage.getReferencedPackages();
+			HashSet<AidaPackage> referenced = apackage.getReferencedPackages();
 			for (AidaPackage aidaPackage : referenced) {
 				l += ", " + aidaPackage.getName();
 			}

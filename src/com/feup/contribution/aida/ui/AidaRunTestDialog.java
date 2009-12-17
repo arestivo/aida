@@ -1,5 +1,6 @@
 package com.feup.contribution.aida.ui;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.eclipse.jdt.core.IJavaProject;
@@ -93,7 +94,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 
 					if (event.detail == SWT.CHECK && item.getChecked()) {
 						AidaPackage p = aidaProject.getPackage(item.getText());
-						LinkedList<AidaPackage> referenced = p.getReferencedPackages();
+						HashSet<AidaPackage> referenced = p.getReferencedPackages();
 						for (AidaPackage aidaPackage : referenced) {
 							for (int i = 0; i < items.length; i++) {
 								if (items[i].getText().equals(aidaPackage.getName()))

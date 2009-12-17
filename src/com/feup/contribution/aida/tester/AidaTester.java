@@ -14,8 +14,6 @@ import java.util.LinkedList;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.JavaModelException;
 
 import com.feup.contribution.aida.AidaPlugin;
 import com.feup.contribution.aida.project.AidaComponent;
