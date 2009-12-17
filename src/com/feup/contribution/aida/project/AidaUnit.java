@@ -42,5 +42,9 @@ public class AidaUnit {
 
 	public HashSet<String> getReferencedUnits() {
 		return referencedUnits;
+	}
+
+	public String getFullPath() {
+		return getResource().getFullPath().toOSString(); 
 	}	
 }

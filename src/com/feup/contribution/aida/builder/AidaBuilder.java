@@ -152,9 +152,8 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 		AidaASTTestVisitor testVisitor = new AidaASTTestVisitor();
 		astRoot.accept(testVisitor);
 		
-		for (String test : testVisitor.getTestNames()) {
-			apackage.addTest(new AidaTest(test, resource));
-		}
+		for (String test : testVisitor.getTestNames()) 
+			apackage.addTest(new AidaTest(test, cu.findPrimaryType().getElementName(), getPackageName(cu), resource));
 	}
 
 	protected void fullBuild(final IProgressMonitor monitor) throws CoreException {
@@ -180,7 +179,7 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 
 	        monitor.done();
 	        
-	        project.logStructure();
+	        //project.logStructure();
 		} catch (CoreException e) {
 
 		}

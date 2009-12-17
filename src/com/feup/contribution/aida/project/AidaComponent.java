@@ -15,7 +15,7 @@ public class AidaComponent {
 	}
 	
 	public static LinkedList<AidaComponent> getOrderedComponents(LinkedList<AidaPackage> packages) {
-		LinkedList<AidaComponent> components = getComponents(packages);
+		LinkedList<AidaComponent> components = createComponents(packages);
 		LinkedList<AidaComponent> orderedComponents = new LinkedList<AidaComponent>();
 		
 		Stack<AidaComponent> s = new Stack<AidaComponent>();
@@ -68,7 +68,7 @@ public class AidaComponent {
 		return components.contains(unit);
 	}
 
-	public static LinkedList<AidaComponent> getComponents(LinkedList<AidaPackage> packages) {
+	public static LinkedList<AidaComponent> createComponents(LinkedList<AidaPackage> packages) {
 		int index[], lowlink[];
 		int i = 0;
 		index = new int[packages.size()];
@@ -132,6 +132,10 @@ public class AidaComponent {
 			total += apackage.getTests().size();
 		}
 		return total;
+	}
+
+	public LinkedList<AidaPackage> getComponents() {
+		return components;
 	}
 
 }

@@ -21,6 +21,7 @@ import com.feup.contribution.aida.AidaPlugin;
 import com.feup.contribution.aida.project.AidaComponent;
 import com.feup.contribution.aida.project.AidaPackage;
 import com.feup.contribution.aida.project.AidaProject;
+import com.feup.contribution.aida.project.AidaTest;
 import com.feup.contribution.aida.project.AidaUnit;
 
 public class AidaTester {
@@ -44,14 +45,16 @@ public class AidaTester {
 			String unitpath = project.getPath().toOSString();
 			for (AidaPackage aidaPackage : aidaComponent.getPackages()) {
 				for (AidaUnit unit : aidaPackage.getUnits()) {
-					copyPackage(unitpath, unit);					
+					copyPackage(unitpath, unit.getFullPath());					
+				}
+				for (AidaTest test : aidaPackage.getTests()) {
+					copyPackage(unitpath, test.getFullPath());		
 				}
 			}
 		}
 	}
 
-	private void copyPackage(String unitpath, AidaUnit unit) {
-		String path = unit.getResource().getFullPath().toOSString(); 
+	private void copyPackage(String unitpath, String path) {
 		
 		String newdir = path.substring(path.indexOf('/') + 1);
 		newdir = newdir.substring(newdir.indexOf('/'));
@@ -107,13 +110,11 @@ public class AidaTester {
 	public void tearDown() {
 	}
 
-	public boolean test(IMethod method, String classpath) {
+	public boolean test(String packageName, String className, String methodName, String classpath) {
 		details = "";
 		try {
-			String unitname = method.getCompilationUnit().getPackageDeclarations()[0].getElementName();
-
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("/tmp/aida/bin/test.sh")));
-			bw.write("export CLASSPATH=" + classpath + "\ncd /tmp/aida/bin/\njunit -m " + unitname + "." + method.getParent().getElementName() + "." + method.getElementName());
+			bw.write("export CLASSPATH=" + classpath + "\ncd /tmp/aida/bin/\njunit -m " + packageName + "." + className + "." + methodName);
 			bw.close();
 
 			new File("/tmp/aida/bin/test.sh").setExecutable(true);
@@ -127,8 +128,6 @@ public class AidaTester {
 				if (line.contains(new String("OK (1 test)"))) return true;
 			}
 			p.waitFor();
-		} catch (JavaModelException e) {
-			AidaPlugin.getDefault().log(e.toString());
 		} catch (IOException e) {
 			AidaPlugin.getDefault().log(e.toString());
 		} catch (InterruptedException e) {

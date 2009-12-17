@@ -6,16 +6,17 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 
 public class AidaASTTestVisitor extends ASTVisitor{
-	private HashSet<String> testNames = new HashSet<String>();
+	private HashSet<String> tests = new HashSet<String>();
 	
 	@Override
 	public boolean visit(MethodDeclaration node) {
 		String name = node.getName().getFullyQualifiedName();
-		if (name.startsWith("test")) testNames.add(name);
+		if (name.startsWith("test")) tests.add(name);
 		return super.visit(node);
 	}
 
 	public HashSet<String> getTestNames() {
-		return testNames;
+		return tests;
 	}
+
 }

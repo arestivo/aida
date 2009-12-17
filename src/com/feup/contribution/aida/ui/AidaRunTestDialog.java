@@ -25,6 +25,7 @@ import com.feup.contribution.aida.AidaPlugin;
 import com.feup.contribution.aida.project.AidaComponent;
 import com.feup.contribution.aida.project.AidaPackage;
 import com.feup.contribution.aida.project.AidaProject;
+import com.feup.contribution.aida.project.AidaTest;
 import com.feup.contribution.aida.tester.AidaTester;
 
 public class AidaRunTestDialog extends TitleAreaDialog{
@@ -90,7 +91,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 							getButton(RUN).setEnabled(true);
 						}
 
-					if (event.detail == SWT.CHECK) {
+					if (event.detail == SWT.CHECK && item.getChecked()) {
 						AidaPackage p = aidaProject.getPackage(item.getText());
 						LinkedList<AidaPackage> referenced = p.getReferencedPackages();
 						for (AidaPackage aidaPackage : referenced) {
@@ -99,7 +100,8 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 									items[i].setChecked(true);
 							}
 						}
-					} else {
+					}
+					if (event.detail == SWT.CHECK && !item.getChecked()) {
 						AidaPackage p = aidaProject.getPackage(item.getText());
 						LinkedList<AidaPackage> referencedBy = p.getReferencedByPackages();
 						for (AidaPackage aidaPackage : referencedBy) {
@@ -137,7 +139,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 		TableColumn resultColumn = new TableColumn(testsTable, SWT.LEFT | SWT.BORDER | SWT.H_SCROLL);
 		resultColumn.setWidth(50);
 		resultColumn.setText("Result");		
-
+		
 		return parent;
 	}
 
@@ -166,39 +168,68 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 		setReturnCode(RUN);
 		final LinkedList<AidaPackage> selectedPackages = getSelectedPackages();
 
+		final TestDialogUpdater updater = new TestDialogUpdater(testsTable, this);
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try{
-				final TestDialogUpdater updater = new TestDialogUpdater(testsTable);
 				updater.cleanTable();
-		
+				updater.setMessage(null);
+						
 				updater.disableButton(runButton);
 		
 				int numberTests = 0;
-				final LinkedList<AidaComponent> components = AidaComponent.getOrderedComponents(selectedPackages);
+				LinkedList<AidaComponent> components = AidaComponent.getOrderedComponents(selectedPackages);
 				for (AidaComponent aidaComponent : components) {
 					numberTests += aidaComponent.getNumberTests();
 					updater.addLine(aidaComponent.toString(), numberTests);
 				}
 
 				int index = 0;
-				final LinkedList<AidaComponent> currentComponents = new LinkedList<AidaComponent>();
+				LinkedList<AidaComponent> currentComponents = new LinkedList<AidaComponent>();
 				for (AidaComponent aidaComponent : components) {
+					LinkedList<AidaComponent> oldComponents = new LinkedList<AidaComponent>();
+					oldComponents.addAll(currentComponents);
 					currentComponents.add(aidaComponent);
-					final AidaTester tester = new AidaTester(aidaProject, project);
+
+					AidaTester tester = new AidaTester(aidaProject, project);
 					tester.setUpTest(currentComponents);
 					updater.update(index, 2, "Compiling");
 					tester.compile(aidaProject.getClasspath(project));
 
 					updater.update(index, 2, "Testing");
-					numberTests = 0;
-					for (AidaComponent aidaComponent2 : currentComponents)
-						numberTests += aidaComponent2.getNumberTests();
 
-					for (int i = 0 ; i <= numberTests; i++) {
-						Thread.sleep(100);
-						updater.updateBar(index, i);
+					int testNumber = 1;
+					for (AidaComponent oldComponent : oldComponents) {
+						LinkedList<AidaPackage> packages = oldComponent.getComponents();
+						for (AidaPackage aidaPackage : packages) {
+							LinkedList<AidaTest> tests = aidaPackage.getTests();
+							for (AidaTest test : tests) {
+								boolean result = tester.test(test.getPackageName(), test.getClassName(), test.getMethodName(), aidaProject.getClasspath(project));
+								if (!result) {
+									updater.update(index, 2, "Failed");
+									updater.setMessage("Component " + aidaComponent.toString() + " conflicts with " + test.getPackageName() + "." + test.getClassName() + "." + test.getMethodName());
+									updater.enableButton(runButton);
+									return;
+								}
+								updater.updateBar(index, testNumber++);
+							}
+						}
+					}
+
+					LinkedList<AidaPackage> packages = aidaComponent.getComponents();
+					for (AidaPackage aidaPackage : packages) {
+						LinkedList<AidaTest> tests = aidaPackage.getTests();
+						for (AidaTest test : tests) {
+							boolean result = tester.test(test.getPackageName(), test.getClassName(), test.getMethodName(), aidaProject.getClasspath(project));
+							if (!result) {
+								updater.update(index, 2, "Failed");
+								updater.setMessage("Test failed " + test.getPackageName() + "." + test.getClassName() + "." + test.getMethodName());
+								updater.enableButton(runButton);
+								return;
+							}
+							updater.updateBar(index, testNumber++);
+						}
 					}
 					
 					updater.update(index, 2, "Passed");
