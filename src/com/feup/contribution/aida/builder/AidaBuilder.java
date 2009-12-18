@@ -121,6 +121,8 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 		AidaProject project = AidaProject.getProject(getProject().getName());
 		AidaPackage apackage = project.getPackage(getPackageLabel(cu));
 
+		if (cu.findPrimaryType() == null) return;
+		
 		AidaUnit aidaUnit = apackage.addUnit(cu.findPrimaryType().getElementName(), getPackageName(cu)+"."+cu.findPrimaryType().getElementName(), resource);
 
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
