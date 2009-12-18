@@ -26,6 +26,9 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import com.feup.contribution.aida.AidaPlugin;
 import com.feup.contribution.aida.diagram.DotDiagramCreator;
@@ -193,11 +196,16 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 
 	        monitor.done();
 	        
-	        project.logStructure();
+//	        project.logStructure();
 	        DotDiagramCreator diagramCreator = new DotDiagramCreator(project);
 	        diagramCreator.drawDiagram();
 
 	        //TODO: Redo compilation if first time
+	        if (project.isFirstCompilation()){
+	        	project.setFirstCompilation(false);
+	        	needRebuild();
+	        }
+	        
 		} catch (Exception e) {
 			AidaPlugin.getDefault().logException(e);
 		}
