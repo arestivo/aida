@@ -9,6 +9,7 @@ public class AidaUnit {
 	private IResource resource;
 	private String completeName;
 	private HashSet<String> referencedUnits = new HashSet<String>();
+	private HashSet<String> mandatoryUnits = new HashSet<String>();
 
 	public AidaUnit(String name, String completeName, IResource resource) {
 		this.completeName = completeName;
@@ -46,5 +47,13 @@ public class AidaUnit {
 
 	public String getFullPath() {
 		return getResource().getFullPath().toOSString(); 
+	}
+
+	public void addMandatoryUnits(HashSet<String> unitNames) {
+		this.mandatoryUnits.addAll(unitNames);
+	}
+
+	public HashSet<String> getMandatoryUnits() {
+		return mandatoryUnits;
 	}	
 }

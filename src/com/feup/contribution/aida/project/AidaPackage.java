@@ -12,6 +12,7 @@ public class AidaPackage {
 	private String name;
 	private HashMap<String, AidaUnit> units = new HashMap<String, AidaUnit>();
 	private HashSet<AidaPackage> referencedPackages = new HashSet<AidaPackage>();
+	private HashSet<AidaPackage> mandatoryPackages = new HashSet<AidaPackage>();
 	private LinkedList<AidaPackage> referencedByPackages = new LinkedList<AidaPackage>();
 	private LinkedList<AidaTest> tests = new LinkedList<AidaTest>();
 	
@@ -52,8 +53,12 @@ public class AidaPackage {
 					aidaPackage.addReferencedBy(this);
 				}
 			}
+			HashSet<String> mandatoryUnits = unit.getMandatoryUnits();
+			for (String mUnit : mandatoryUnits)
+				mandatoryPackages.addAll(project.getPackagesForUnit(mUnit));
 		}
 		referencedPackages.remove(this);
+		mandatoryPackages.remove(this);
 	}
 
 	private void addReferencedBy(AidaPackage aidaPackage) {
@@ -63,6 +68,10 @@ public class AidaPackage {
 
 	public HashSet<AidaPackage> getReferencedPackages() {
 		return referencedPackages;
+	}
+
+	public HashSet<AidaPackage> getMandatoryPackages() {
+		return mandatoryPackages;
 	}
 
 	public LinkedList<AidaPackage> getReferencedByPackages() {

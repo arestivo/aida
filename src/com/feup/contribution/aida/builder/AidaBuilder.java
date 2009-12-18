@@ -115,7 +115,6 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 	
 	void checkJava(IResource resource) {
 		ICompilationUnit cu = (ICompilationUnit) JavaCore.create(resource);
-		if (cu.findPrimaryType() == null) {AidaPlugin.getDefault().log("ECU: " + resource.getName()); return;}
 		
 		if (isTestUnit(cu)) {checkTest(resource); return;}
 		
@@ -132,6 +131,7 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 		AidaASTVisitor aidaVisitor = new AidaASTVisitor();
 		astRoot.accept(aidaVisitor);
 		aidaUnit.addReferencedUnits(aidaVisitor.getUnitNames());
+		aidaUnit.addMandatoryUnits(aidaVisitor.getUnitNames());
 	}
 
 /*	private void deleteMarkers(IFile file) {

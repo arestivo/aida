@@ -54,7 +54,8 @@ public class AidaProject {
 			AidaPackage apackage = packages.get(packageName);
 			HashSet<AidaPackage> referenced = apackage.getReferencedPackages();
 			for (AidaPackage aidaPackage : referenced) {
-				l += ", " + aidaPackage.getName();
+				l += " " + aidaPackage.getName();
+				if (apackage.getMandatoryPackages().contains(aidaPackage)) l += "*";
 			}
 			AidaPlugin.getDefault().log(l);
 		}		

@@ -11,14 +11,13 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
@@ -94,7 +93,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 
 					if (event.detail == SWT.CHECK && item.getChecked()) {
 						AidaPackage p = aidaProject.getPackage(item.getText());
-						HashSet<AidaPackage> referenced = p.getReferencedPackages();
+						HashSet<AidaPackage> referenced = p.getMandatoryPackages();
 						for (AidaPackage aidaPackage : referenced) {
 							for (int i = 0; i < items.length; i++) {
 								if (items[i].getText().equals(aidaPackage.getName()))
@@ -107,7 +106,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 						LinkedList<AidaPackage> referencedBy = p.getReferencedByPackages();
 						for (AidaPackage aidaPackage : referencedBy) {
 							for (int i = 0; i < items.length; i++) {
-								if (items[i].getText().equals(aidaPackage.getName()))
+								if (items[i].getText().equals(aidaPackage.getName()) && aidaPackage.getMandatoryPackages().contains(p))
 									items[i].setChecked(false);
 							}
 						}		        	  
