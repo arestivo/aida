@@ -117,6 +117,7 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 		ICompilationUnit cu = (ICompilationUnit) JavaCore.create(resource);
 		
 		if (isTestUnit(cu)) {checkTest(resource); return;}
+		//TODO: Do we need to add dependencies from tests?
 		
 		AidaProject project = AidaProject.getProject(getProject().getName());
 		AidaPackage apackage = project.getPackage(getPackageLabel(cu));
@@ -148,9 +149,6 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 		ICompilationUnit cu = (ICompilationUnit) JavaCore.create(resource);
 		
 		AidaProject project = AidaProject.getProject(getProject().getName());
-		AidaPackage apackage = project.getPackage(getTestFor(cu));
-		
-		if (apackage == null) return;
 
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setSource(cu);
@@ -159,8 +157,10 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 		AidaASTTestVisitor testVisitor = new AidaASTTestVisitor();
 		astRoot.accept(testVisitor);
 		
-		for (String test : testVisitor.getTestNames()) 
+		for (String test : testVisitor.getTestNames()) {
+			AidaPackage apackage = project.getPackage(getTestFor(cu));
 			apackage.addTest(new AidaTest(test, cu.findPrimaryType().getElementName(), getPackageName(cu), resource));
+		}
 	}
 
 	protected void fullBuild(final IProgressMonitor monitor) throws CoreException {
