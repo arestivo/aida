@@ -1,11 +1,10 @@
 package com.feup.contribution.aida.project;
 
-import java.util.Collection;
+import java.util.Collection; 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaModelException;
@@ -18,6 +17,7 @@ public class AidaProject {
 	
 	private String name;
 	private IJavaProject iProject = null;
+	private boolean firstCompilation = true;
 
 	protected AidaProject(String name) {
 		this.setName(name);
@@ -104,5 +104,13 @@ public class AidaProject {
 
 	public void setIProject(IJavaProject iProject) {
 		this.iProject = iProject;
+	}
+
+	public boolean isFirstCompilation() {
+		return firstCompilation ;
+	}
+
+	public void setFirstCompilation(boolean firstCompilation) {
+		this.firstCompilation = firstCompilation;
 	}
 }

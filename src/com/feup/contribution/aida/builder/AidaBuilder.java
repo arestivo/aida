@@ -1,6 +1,6 @@
 package com.feup.contribution.aida.builder;
 
-import java.util.HashSet;
+import java.util.HashSet; 
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +28,6 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import com.feup.contribution.aida.AidaPlugin;
-import com.feup.contribution.aida.annotations.TestFor;
 import com.feup.contribution.aida.diagram.DotDiagramCreator;
 import com.feup.contribution.aida.project.AidaPackage;
 import com.feup.contribution.aida.project.AidaProject;
@@ -172,7 +171,7 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 
 	protected void fullBuild(final IProgressMonitor monitor) throws CoreException {
 		try {
-			AidaProject project = AidaProject.getProject(getProject().getName());
+			final AidaProject project = AidaProject.getProject(getProject().getName());
 			if (project.getIProject() == null) project.setIProject(JavaCore.create(getProject()));
  	        monitor.beginTask("Aida Compile", 4);
 
@@ -197,6 +196,8 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 	        project.logStructure();
 	        DotDiagramCreator diagramCreator = new DotDiagramCreator(project);
 	        diagramCreator.drawDiagram();
+
+	        //TODO: Redo compilation if first time
 		} catch (Exception e) {
 			AidaPlugin.getDefault().logException(e);
 		}

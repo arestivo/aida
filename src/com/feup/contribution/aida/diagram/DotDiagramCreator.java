@@ -34,11 +34,13 @@ public class DotDiagramCreator {
 			}
 
 
-			bw.write("  edge [ color = \"black\", arrowhead=\"ovee\" ]\n");
+			bw.write("  edge [ color = \"black\", arrowhead=\"vee\" ]\n");
 
 			for (AidaPackage apackage : project.getPackages()) {
 				for (AidaPackage dpackage : apackage.getReferencedPackages()) {
+					if (!apackage.getMandatoryPackages().contains(dpackage)) bw.write("  edge [ color = \"green\", arrowhead=\"vee\" ]\n");
 					bw.write("    \"" + apackage.getName() + "\" -- \"" + dpackage.getName() + "\"\n");
+					if (!apackage.getMandatoryPackages().contains(dpackage)) bw.write("  edge [ color = \"black\", arrowhead=\"vee\" ]\n");
 				}
 			}			
 			
