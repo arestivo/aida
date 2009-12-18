@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaModelException;
@@ -16,6 +17,7 @@ public class AidaProject {
 	private HashMap<String, AidaPackage> packages = new HashMap<String, AidaPackage>();
 	
 	private String name;
+	private IJavaProject iProject = null;
 
 	protected AidaProject(String name) {
 		this.setName(name);
@@ -95,4 +97,12 @@ public class AidaProject {
 		 } catch (JavaModelException e) { }
 		 return cp;
 	 }
+
+	public IJavaProject getIProject() {
+		return iProject;
+	}
+
+	public void setIProject(IJavaProject iProject) {
+		this.iProject = iProject;
+	}
 }

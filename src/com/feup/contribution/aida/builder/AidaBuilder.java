@@ -28,6 +28,8 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import com.feup.contribution.aida.AidaPlugin;
+import com.feup.contribution.aida.annotations.TestFor;
+import com.feup.contribution.aida.diagram.DotDiagramCreator;
 import com.feup.contribution.aida.project.AidaPackage;
 import com.feup.contribution.aida.project.AidaProject;
 import com.feup.contribution.aida.project.AidaTest;
@@ -68,9 +70,13 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 
 	protected String getPackageName(ICompilationUnit cu) {
 		try {
-			if (cu.getPackageDeclarations().length==0) return "default";
+			if (cu.getPackageDeclarations().length==0) {
+				AidaPlugin.getDefault().log("DPN: " + cu.getElementName());
+				return "default";
+			}
 			return cu.getPackageDeclarations()[0].getElementName();
 		} catch (JavaModelException e) {}
+		AidaPlugin.getDefault().log("UPN: " + cu.getElementName());
 		return "unknown";
 	}
 
@@ -115,13 +121,14 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 	
 	void checkJava(IResource resource) {
 		ICompilationUnit cu = (ICompilationUnit) JavaCore.create(resource);
+		if (cu.findPrimaryType() == null) return;
 		
 		if (isTestUnit(cu)) {checkTest(resource); return;}
 		//TODO: Do we need to add dependencies from tests?
 		
 		AidaProject project = AidaProject.getProject(getProject().getName());
 		AidaPackage apackage = project.getPackage(getPackageLabel(cu));
-
+		
 		if (cu.findPrimaryType() == null) return;
 		
 		AidaUnit aidaUnit = apackage.addUnit(cu.findPrimaryType().getElementName(), getPackageName(cu)+"."+cu.findPrimaryType().getElementName(), resource);
@@ -166,6 +173,7 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 	protected void fullBuild(final IProgressMonitor monitor) throws CoreException {
 		try {
 			AidaProject project = AidaProject.getProject(getProject().getName());
+			if (project.getIProject() == null) project.setIProject(JavaCore.create(getProject()));
  	        monitor.beginTask("Aida Compile", 4);
 
  	        monitor.subTask("Preparing");
@@ -187,6 +195,8 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 	        monitor.done();
 	        
 	        project.logStructure();
+	        DotDiagramCreator diagramCreator = new DotDiagramCreator(project);
+	        diagramCreator.drawDiagram();
 		} catch (Exception e) {
 			AidaPlugin.getDefault().logException(e);
 		}

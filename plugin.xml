@@ -52,6 +52,13 @@
                enablesFor="1"
                id="com.feup.contribution.aida.runTestsAction">
          </action>
+         <action
+               label="Dependency Diagram"
+               class="com.feup.contribution.aida.diagram.ShowDiagramAction"
+               menubarPath="com.feup.contribution.aida.aidamenu/slot1"
+               enablesFor="1"
+               id="com.feup.contribution.aida.showDiagramAction">
+         </action>
       </objectContribution>
    </extension>
    <extension

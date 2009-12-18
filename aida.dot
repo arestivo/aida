@@ -1,0 +1,32 @@
+graph "druid" {
+  node [ fontname = "Trebuchet", label = "\N"]
+  node [ shape = "component", color = "blue"]
+    "com.feup.contribution.aida.project" [label="com.feup.contribution.aida.project"]
+    "com.feup.contribution.aida.diagram" [label="com.feup.contribution.aida.diagram"]
+    "com.feup.contribution.aida.annotations" [label="com.feup.contribution.aida.annotations"]
+    "com.feup.contribution.aida.nature" [label="com.feup.contribution.aida.nature"]
+    "com.feup.contribution.aida.ui" [label="com.feup.contribution.aida.ui"]
+    "com.feup.contribution.aida" [label="com.feup.contribution.aida"]
+    "com.feup.contribution.aida.container" [label="com.feup.contribution.aida.container"]
+    "com.feup.contribution.aida.tester" [label="com.feup.contribution.aida.tester"]
+    "com.feup.contribution.aida.builder" [label="com.feup.contribution.aida.builder"]
+  edge [ color = "black", arrowhead="ovee" ]
+    "com.feup.contribution.aida.project" -- "com.feup.contribution.aida"
+    "com.feup.contribution.aida.diagram" -- "com.feup.contribution.aida.project"
+    "com.feup.contribution.aida.diagram" -- "com.feup.contribution.aida"
+    "com.feup.contribution.aida.diagram" -- "com.feup.contribution.aida.ui"
+    "com.feup.contribution.aida.nature" -- "com.feup.contribution.aida.builder"
+    "com.feup.contribution.aida.nature" -- "com.feup.contribution.aida.container"
+    "com.feup.contribution.aida.ui" -- "com.feup.contribution.aida.project"
+    "com.feup.contribution.aida.ui" -- "com.feup.contribution.aida.diagram"
+    "com.feup.contribution.aida.ui" -- "com.feup.contribution.aida"
+    "com.feup.contribution.aida.ui" -- "com.feup.contribution.aida.tester"
+    "com.feup.contribution.aida.container" -- "com.feup.contribution.aida"
+    "com.feup.contribution.aida.tester" -- "com.feup.contribution.aida.project"
+    "com.feup.contribution.aida.tester" -- "com.feup.contribution.aida"
+    "com.feup.contribution.aida.tester" -- "com.feup.contribution.aida.ui"
+    "com.feup.contribution.aida.builder" -- "com.feup.contribution.aida.project"
+    "com.feup.contribution.aida.builder" -- "com.feup.contribution.aida.diagram"
+    "com.feup.contribution.aida.builder" -- "com.feup.contribution.aida"
+    "com.feup.contribution.aida.builder" -- "com.feup.contribution.aida.annotations"
+}
