@@ -89,4 +89,11 @@ public class AidaPackage {
 	public LinkedList<AidaTest> getTests() {
 		return tests;
 	}
+
+	public AidaTest getTests(String fullName) {
+		for (AidaTest test : tests) {
+			if (test.getFullName().equals(fullName)) return test;
+		}
+		return null;
+	}
 }

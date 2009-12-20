@@ -1,6 +1,7 @@
 package com.feup.contribution.aida.builder;
 
-import java.util.HashSet; 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -26,9 +27,6 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 
 import com.feup.contribution.aida.AidaPlugin;
 import com.feup.contribution.aida.diagram.DotDiagramCreator;
@@ -126,7 +124,6 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 		if (cu.findPrimaryType() == null) return;
 		
 		if (isTestUnit(cu)) {checkTest(resource); return;}
-		//TODO: Do we need to add dependencies from tests?
 		
 		AidaProject project = AidaProject.getProject(getProject().getName());
 		AidaPackage apackage = project.getPackage(getPackageLabel(cu));
@@ -161,15 +158,20 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setSource(cu);
+		parser.setResolveBindings(true);
 		CompilationUnit astRoot = (CompilationUnit) parser.createAST(null);
 		
 		AidaASTTestVisitor testVisitor = new AidaASTTestVisitor();
 		astRoot.accept(testVisitor);
 		
+		HashMap<String, HashSet<String>> replaces = testVisitor.getReplaces();
 		for (String test : testVisitor.getTestNames()) {
 			AidaPackage apackage = project.getPackage(getTestFor(cu));
-			apackage.addTest(new AidaTest(test, cu.findPrimaryType().getElementName(), getPackageName(cu), resource));
+			AidaTest aTest = new AidaTest(test, cu.findPrimaryType().getElementName(), getPackageName(cu), resource);
+			apackage.addTest(aTest);
+			aTest.addReplaces(replaces.get(test));
 		}
+		
 	}
 
 	protected void fullBuild(final IProgressMonitor monitor) throws CoreException {

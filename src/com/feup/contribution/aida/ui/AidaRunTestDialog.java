@@ -199,18 +199,31 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 
 					updater.update(index, 2, "Testing");
 
+					HashSet<String> replaces = new HashSet<String>();
+					for (AidaComponent oldComponent : currentComponents) {
+						LinkedList<AidaPackage> packages = oldComponent.getComponents();
+						for (AidaPackage aidaPackage : packages) {
+							LinkedList<AidaTest> tests = aidaPackage.getTests();
+							for (AidaTest test : tests) {
+								replaces.addAll(test.getReplaces());
+							}
+						}
+					}
+					
 					int testNumber = 1;
 					for (AidaComponent oldComponent : oldComponents) {
 						LinkedList<AidaPackage> packages = oldComponent.getComponents();
 						for (AidaPackage aidaPackage : packages) {
 							LinkedList<AidaTest> tests = aidaPackage.getTests();
 							for (AidaTest test : tests) {
-								boolean result = tester.test(test.getPackageName(), test.getClassName(), test.getMethodName(), aidaProject.getClasspath(project));
-								if (!result) {
-									updater.update(index, 2, "Failed");
-									updater.setMessage("Component " + aidaComponent.toString() + " conflicts with " + test.getPackageName() + "." + test.getClassName() + "." + test.getMethodName());
-									updater.enableButton(runButton);
-									return;
+								if (!replaces.contains(test.getFullName())) {
+									boolean result = tester.test(test.getPackageName(), test.getClassName(), test.getMethodName(), aidaProject.getClasspath(project));
+									if (!result) {
+										updater.update(index, 2, "Failed");
+										updater.setMessage("Component " + aidaComponent.toString() + " conflicts with " + test.getPackageName() + "." + test.getClassName() + "." + test.getMethodName());
+										updater.enableButton(runButton);
+										return;
+									}
 								}
 								updater.updateBar(index, testNumber++);
 							}
