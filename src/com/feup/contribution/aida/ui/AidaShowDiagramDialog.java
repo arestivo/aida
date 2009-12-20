@@ -41,7 +41,7 @@ public class AidaShowDiagramDialog extends TitleAreaDialog{
 		layout.numColumns = 1;
 		parent.setLayout(layout);
 
-		GridData gd = new GridData(800, 400);
+		GridData gd = new GridData(1000, 550);
 		canvas = new ImageCanvas(parent);
 		canvas.setLayoutData(gd);
 		canvas.pack();
