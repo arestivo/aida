@@ -34,7 +34,7 @@ public class DotDiagramCreator {
 			}
 
 
-			bw.write("  edge [ color = \"black\", arrowhead=\"vee\" ]\n");
+			bw.write("  edge [ color = \"black\", arrowhead=\"vee\", style=\"dashed\" ]\n");
 
 			for (AidaPackage apackage : project.getPackages()) {
 				for (AidaPackage dpackage : apackage.getReferencedPackages()) {
