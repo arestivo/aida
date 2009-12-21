@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.Platform;
 import com.feup.contribution.aida.AidaPlugin;
 import com.feup.contribution.aida.project.AidaPackage;
 import com.feup.contribution.aida.project.AidaProject;
+import com.feup.contribution.aida.project.AidaTest;
 
 public class DotDiagramCreator {
 	AidaProject project;
@@ -34,15 +35,24 @@ public class DotDiagramCreator {
 			}
 
 
-			bw.write("  edge [ color = \"black\", arrowhead=\"vee\", style=\"dashed\" ]\n");
+			bw.write("  edge [ color = \"black\", arrowhead=\"empty\", style=\"dashed\" ]\n");
 
 			for (AidaPackage apackage : project.getPackages()) {
 				for (AidaPackage dpackage : apackage.getReferencedPackages()) {
-					if (!apackage.getMandatoryPackages().contains(dpackage)) bw.write("  edge [ color = \"green\", arrowhead=\"vee\" ]\n");
+					if (!apackage.getMandatoryPackages().contains(dpackage)) bw.write("  edge [ color = \"green\"]\n");
 					bw.write("    \"" + apackage.getName() + "\" -- \"" + dpackage.getName() + "\"\n");
-					if (!apackage.getMandatoryPackages().contains(dpackage)) bw.write("  edge [ color = \"black\", arrowhead=\"vee\" ]\n");
+					if (!apackage.getMandatoryPackages().contains(dpackage)) bw.write("  edge [ color = \"black\"]\n");
 				}
 			}			
+
+			bw.write("  edge [ color = \"blue\", arrowhead=\"dot\", style=\"solid\" ]\n");
+			for (AidaPackage apackage : project.getPackages())
+				for (AidaTest test : apackage.getTests())
+					for (String replaces : test.getReplaces())
+						for (AidaPackage rpackage : project.getPackages())
+							for (AidaTest rtest : rpackage.getTests())
+								if (replaces.equals(rtest.getFullName()))
+									bw.write("    \"" + apackage.getName() + "\" -- \"" + rpackage.getName() + "\"\n");
 			
 			bw.write("}\n");
 			bw.close();
