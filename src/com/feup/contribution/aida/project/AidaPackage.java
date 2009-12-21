@@ -9,12 +9,17 @@ import java.util.Set;
 import org.eclipse.core.resources.IResource;
 
 public class AidaPackage {
+	public enum State {COMPILED, FAILED, PASSED};
+
 	private String name;
+	
 	private HashMap<String, AidaUnit> units = new HashMap<String, AidaUnit>();
 	private HashSet<AidaPackage> referencedPackages = new HashSet<AidaPackage>();
 	private HashSet<AidaPackage> mandatoryPackages = new HashSet<AidaPackage>();
 	private LinkedList<AidaPackage> referencedByPackages = new LinkedList<AidaPackage>();
 	private LinkedList<AidaTest> tests = new LinkedList<AidaTest>();
+	
+	private State state = State.COMPILED;
 	
 	public AidaPackage(String name) {
 		this.name = name;
@@ -95,5 +100,13 @@ public class AidaPackage {
 			if (test.getFullName().equals(fullName)) return test;
 		}
 		return null;
+	}
+
+	public void setState(State state) {
+		this.state = state;
+	}
+
+	public State getState() {
+		return state;
 	}
 }

@@ -14,6 +14,7 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
+import com.feup.contribution.aida.diagram.DotDiagramCreator;
 import com.feup.contribution.aida.project.AidaProject;
 import com.feup.contribution.aida.ui.AidaRunTestDialog;
 
@@ -54,7 +55,9 @@ public class RunTestsAction implements IObjectActionDelegate {
 		            dialog.setProject(AidaProject.getProject(project.getName()), javaProject);
 		            dialog.setBlockOnOpen(true);
 		            dialog.open();
-
+		            
+			        DotDiagramCreator diagramCreator = new DotDiagramCreator(AidaProject.getProject(project.getName()));
+			        diagramCreator.drawDiagram();
 		    }
 		});		
 		

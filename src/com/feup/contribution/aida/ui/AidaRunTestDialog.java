@@ -200,13 +200,14 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 					updater.update(index, 2, "Testing");
 
 					HashSet<String> replaces = new HashSet<String>();
-					for (AidaComponent oldComponent : currentComponents) {
-						LinkedList<AidaPackage> packages = oldComponent.getComponents();
+					for (AidaComponent currentComponent : currentComponents) {
+						LinkedList<AidaPackage> packages = currentComponent.getComponents();
 						for (AidaPackage aidaPackage : packages) {
 							LinkedList<AidaTest> tests = aidaPackage.getTests();
 							for (AidaTest test : tests) {
 								replaces.addAll(test.getReplaces());
 							}
+							aidaPackage.setState(AidaPackage.State.PASSED);
 						}
 					}
 					
@@ -239,6 +240,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 								updater.update(index, 2, "Failed");
 								updater.setMessage("Test failed " + test.getPackageName() + "." + test.getClassName() + "." + test.getMethodName());
 								updater.enableButton(runButton);
+								aidaPackage.setState(AidaPackage.State.FAILED);
 								return;
 							}
 							updater.updateBar(index, testNumber++);

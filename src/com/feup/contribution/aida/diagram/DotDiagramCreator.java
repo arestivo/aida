@@ -31,7 +31,10 @@ public class DotDiagramCreator {
 			bw.write("  node [ shape = \"component\", color = \"blue\"]\n");
 
 			for (AidaPackage apackage : project.getPackages()) {
+				if (apackage.getState() == AidaPackage.State.FAILED) bw.write("  node [ color = \"red\"]\n");
+				if (apackage.getState() == AidaPackage.State.PASSED) bw.write("  node [ color = \"green\"]\n");
 				bw.write("    \"" + apackage.getName() + "\" [label=\""+apackage.getName()+"\"]\n");
+				bw.write("  node [ color = \"blue\"]\n");
 			}
 
 
