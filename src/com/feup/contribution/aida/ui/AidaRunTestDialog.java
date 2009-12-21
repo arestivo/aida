@@ -93,23 +93,42 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 
 					if (event.detail == SWT.CHECK && item.getChecked()) {
 						AidaPackage p = aidaProject.getPackage(item.getText());
-						HashSet<AidaPackage> referenced = p.getMandatoryPackages();
-						for (AidaPackage aidaPackage : referenced) {
-							for (int i = 0; i < items.length; i++) {
-								if (items[i].getText().equals(aidaPackage.getName()))
-									items[i].setChecked(true);
+						addPackage(p);
+					}
+					
+					if (event.detail == SWT.CHECK && !item.getChecked()) {
+						AidaPackage p = aidaProject.getPackage(item.getText());
+						removePackage(p);
+					}
+				}
+			}
+
+			private void removePackage(AidaPackage p) {
+				LinkedList<AidaPackage> referencedBy = p.getReferencedByPackages();
+				TableItem[] items = packagesTable.getItems();
+				for (AidaPackage aidaPackage : referencedBy) {
+					for (int i = 0; i < items.length; i++) {
+						if (items[i].getText().equals(aidaPackage.getName()) && aidaPackage.getMandatoryPackages().contains(p)) {
+							if (items[i].getChecked()) {
+								items[i].setChecked(false);
+								removePackage(aidaPackage);
 							}
 						}
 					}
-					if (event.detail == SWT.CHECK && !item.getChecked()) {
-						AidaPackage p = aidaProject.getPackage(item.getText());
-						LinkedList<AidaPackage> referencedBy = p.getReferencedByPackages();
-						for (AidaPackage aidaPackage : referencedBy) {
-							for (int i = 0; i < items.length; i++) {
-								if (items[i].getText().equals(aidaPackage.getName()) && aidaPackage.getMandatoryPackages().contains(p))
-									items[i].setChecked(false);
+				}		        	  
+			}
+
+			private void addPackage(AidaPackage p) {
+				HashSet<AidaPackage> referenced = p.getMandatoryPackages();
+				TableItem[] items = packagesTable.getItems();
+				for (AidaPackage aidaPackage : referenced) {
+					for (int i = 0; i < items.length; i++) {
+						if (items[i].getText().equals(aidaPackage.getName())){
+							if (!items[i].getChecked()) {
+								items[i].setChecked(true);
+								addPackage(aidaPackage);
 							}
-						}		        	  
+						}
 					}
 				}
 			}
