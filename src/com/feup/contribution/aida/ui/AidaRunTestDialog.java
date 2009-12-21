@@ -185,6 +185,11 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 
 	private void runTests(final Button runButton) {
 		setReturnCode(RUN);
+
+		final LinkedList<AidaPackage> allPackages = aidaProject.getPackages();
+		for (AidaPackage aidaPackage : allPackages)
+			aidaPackage.setState(AidaPackage.State.COMPILED);
+
 		final LinkedList<AidaPackage> selectedPackages = getSelectedPackages();
 
 		final TestDialogUpdater updater = new TestDialogUpdater(testsTable, this);
