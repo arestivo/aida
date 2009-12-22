@@ -128,6 +128,8 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 		AidaProject project = AidaProject.getProject(getProject().getName());
 		AidaPackage apackage = project.getPackage(getPackageLabel(cu));
 		
+		apackage.setState(AidaPackage.State.COMPILED);
+		
 		if (cu.findPrimaryType() == null) return;
 		
 		AidaUnit aidaUnit = apackage.addUnit(cu.findPrimaryType().getElementName(), getPackageName(cu)+"."+cu.findPrimaryType().getElementName(), resource);
