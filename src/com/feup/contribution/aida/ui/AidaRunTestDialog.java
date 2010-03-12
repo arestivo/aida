@@ -69,6 +69,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 		for (AidaPackage aidaPackage : packages) {
 			TableItem item = new TableItem(packagesTable, SWT.NONE);
 			item.setText(aidaPackage.getName());			
+			item.setChecked(true);
 		}
 
 		packagesTable.setHeaderVisible(true);
