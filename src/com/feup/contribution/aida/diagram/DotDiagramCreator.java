@@ -28,7 +28,7 @@ public class DotDiagramCreator {
 			bw.write("graph \"druid\" {\n");
 			bw.write("  node [ fontname = \"Trebuchet\", label = \"\\N\"]\n");
 
-			bw.write("  node [ shape = \"component\", color = \"blue\"]\n");
+			bw.write("  node [ shape = \"tab\", color = \"blue\"]\n");
 
 			for (AidaPackage apackage : project.getPackages()) {
 				if (apackage.getState() == AidaPackage.State.FAILED) bw.write("  node [ color = \"red\"]\n");
