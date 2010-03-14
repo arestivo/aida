@@ -109,4 +109,11 @@ public class AidaPackage {
 	public State getState() {
 		return state;
 	}
+
+	public Collection<String> getReplaces() {
+		HashSet<String> replaces = new HashSet<String>();
+		for (AidaTest test : getTests())
+			replaces.addAll(test.getReplaces());
+		return replaces;
+	}
 }

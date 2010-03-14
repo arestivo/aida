@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.HashSet;
 
 import org.eclipse.core.runtime.Platform;
 
@@ -48,14 +49,16 @@ public class DotDiagramCreator {
 				}
 			}			
 
+			HashSet<String> cReplaces = new HashSet<String>();
 			bw.write("  edge [ color = \"blue\", arrowhead=\"dot\", style=\"solid\" ]\n");
 			for (AidaPackage apackage : project.getPackages())
-				for (AidaTest test : apackage.getTests())
-					for (String replaces : test.getReplaces())
+					for (String replaces : apackage.getReplaces())
 						for (AidaPackage rpackage : project.getPackages())
 							for (AidaTest rtest : rpackage.getTests())
-								if (replaces.equals(rtest.getFullName()))
+								if (replaces.equals(rtest.getFullName()) && !cReplaces.contains(apackage.getName()+"->"+rpackage.getName())) {
 									bw.write("    \"" + apackage.getName() + "\" -- \"" + rpackage.getName() + "\"\n");
+									cReplaces.add(apackage.getName()+"->"+rpackage.getName());
+								}
 			
 			bw.write("}\n");
 			bw.close();
