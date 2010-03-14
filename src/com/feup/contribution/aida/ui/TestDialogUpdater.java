@@ -9,15 +9,18 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 
 public class TestDialogUpdater {
 	private Table table;
 	final ArrayList<ProgressBar> bars = new ArrayList<ProgressBar>();
 	private final AidaRunTestDialog aidaRunTestDialog;
+	private Text details;
 	
-	public TestDialogUpdater(Table table, AidaRunTestDialog aidaRunTestDialog) {
+	public TestDialogUpdater(Table table, AidaRunTestDialog aidaRunTestDialog, Text details) {
 		this.table = table;
 		this.aidaRunTestDialog = aidaRunTestDialog;
+		this.details = details;
 	}
 	
 	public void update(final int index, final int column, final String text) {
@@ -95,6 +98,15 @@ public class TestDialogUpdater {
 			@Override
 			public void run() {
 				aidaRunTestDialog.setErrorMessage(text);
+			}
+		});
+	}
+
+	public void setDetails(final String text) {
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				details.setText(text);
 			}
 		});
 	}

@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 
 import com.feup.contribution.aida.AidaPlugin;
 import com.feup.contribution.aida.project.AidaComponent;
@@ -32,6 +33,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 
 	private Table packagesTable;
 	private Table testsTable;
+	private Text details;
 	private AidaProject aidaProject;
 	private IJavaProject project;
 
@@ -143,8 +145,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 
 		int itemHeightT = testsTable.getItemHeight();
 		gdt.heightHint = itemHeightT * 8;
-
-
+		
 		testsTable.setLinesVisible(true);
 		testsTable.setHeaderVisible(true);
 
@@ -159,6 +160,11 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 		TableColumn resultColumn = new TableColumn(testsTable, SWT.LEFT | SWT.BORDER | SWT.H_SCROLL);
 		resultColumn.setWidth(50);
 		resultColumn.setText("Result");		
+
+		GridData gdd = new GridData(GridData.FILL_BOTH);		
+		details = new Text(parent, SWT.MULTI | SWT.V_SCROLL);		
+		details.setLayoutData(gdd);
+		gdd.heightHint = details.getLineHeight()*8;
 		
 		return parent;
 	}
@@ -193,7 +199,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 
 		final LinkedList<AidaPackage> selectedPackages = getSelectedPackages();
 
-		final TestDialogUpdater updater = new TestDialogUpdater(testsTable, this);
+		final TestDialogUpdater updater = new TestDialogUpdater(testsTable, this, details);
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -266,6 +272,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 								updater.setMessage("Test failed " + test.getPackageName() + "." + test.getClassName() + "." + test.getMethodName());
 								updater.enableButton(runButton);
 								aidaPackage.setState(AidaPackage.State.FAILED);
+								updater.setDetails(tester.getDetails());
 								return;
 							}
 							updater.updateBar(index, testNumber++);
