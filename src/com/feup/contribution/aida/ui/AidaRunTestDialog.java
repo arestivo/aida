@@ -219,6 +219,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 				int index = 0;
 				LinkedList<AidaComponent> currentComponents = new LinkedList<AidaComponent>();
 				for (AidaComponent aidaComponent : components) {
+					long starttime = System.currentTimeMillis();
 					LinkedList<AidaComponent> oldComponents = new LinkedList<AidaComponent>();
 					oldComponents.addAll(currentComponents);
 					currentComponents.add(aidaComponent);
@@ -278,8 +279,9 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 							updater.updateBar(index, testNumber++);
 						}
 					}
-					
-					updater.update(index, 2, "Passed");
+
+					long endtime = System.currentTimeMillis();
+					updater.update(index, 2, "Passed " + ((endtime - starttime)/1000) + "s");
 					index++;
 				}
 
