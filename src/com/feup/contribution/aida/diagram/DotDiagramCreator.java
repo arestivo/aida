@@ -13,6 +13,7 @@ import com.feup.contribution.aida.AidaPlugin;
 import com.feup.contribution.aida.project.AidaPackage;
 import com.feup.contribution.aida.project.AidaProject;
 import com.feup.contribution.aida.project.AidaTest;
+import com.feup.contribution.aida.ui.AidaShowDiagramDialog;
 
 public class DotDiagramCreator {
 	AidaProject project;
@@ -68,6 +69,7 @@ public class DotDiagramCreator {
 		} catch (IOException e) {
 			AidaPlugin.getDefault().logException(e);
 		}
+		AidaShowDiagramDialog.refreshOpenDialogs();
 	}
 
 	private void createPngFile() throws IOException{

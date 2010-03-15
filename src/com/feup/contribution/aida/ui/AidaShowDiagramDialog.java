@@ -1,5 +1,7 @@
 package com.feup.contribution.aida.ui;
 
+import java.util.LinkedList;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -10,8 +12,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import com.feup.contribution.aida.AidaPlugin;
 import com.feup.contribution.aida.diagram.ImageCanvas;
 import com.feup.contribution.aida.project.AidaProject;
 
@@ -23,10 +27,29 @@ public class AidaShowDiagramDialog extends TitleAreaDialog{
 	public static int ZOOM_FIT = 9997;
 	public static int CLOSE = 9996;
 
+	private String imagePath;
+	
 	private ImageCanvas canvas;
+
+	private static LinkedList<AidaShowDiagramDialog> openDialogs = new LinkedList<AidaShowDiagramDialog>();
 	
 	public AidaShowDiagramDialog(Shell parentShell) {
 		super(parentShell);
+	}
+
+	public static void refreshOpenDialogs() {
+		for (AidaShowDiagramDialog dialog : openDialogs) {
+			dialog.refreshImage();
+		}
+	}
+	
+	private void refreshImage() {
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				canvas.setImageData(new ImageData(imagePath));
+			}
+		});
 	}
 
 	@Override
@@ -48,7 +71,10 @@ public class AidaShowDiagramDialog extends TitleAreaDialog{
 		String workspacepath = Platform.getLocation().toOSString();
 		String unitpath = project.getIProject().getPath().toOSString();
 
-		canvas.setImageData(new ImageData(workspacepath+unitpath+"/aida.png"));
+		imagePath = workspacepath+unitpath+"/aida.png";
+		refreshImage();
+
+		openDialogs.add(this);
 		
 		return parent;
 	}
@@ -83,6 +109,7 @@ public class AidaShowDiagramDialog extends TitleAreaDialog{
 		close.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				openDialogs.remove(this);
 				close();
 			}
 		});		

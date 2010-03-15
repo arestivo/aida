@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 import com.feup.contribution.aida.AidaPlugin;
+import com.feup.contribution.aida.diagram.DotDiagramCreator;
 import com.feup.contribution.aida.project.AidaComponent;
 import com.feup.contribution.aida.project.AidaPackage;
 import com.feup.contribution.aida.project.AidaProject;
@@ -211,6 +212,8 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 		for (AidaPackage aidaPackage : allPackages)
 			aidaPackage.setState(AidaPackage.State.COMPILED);
 
+		DotDiagramCreator ddc = new DotDiagramCreator(aidaProject); ddc.drawDiagram();
+		
 		final LinkedList<AidaPackage> selectedPackages = getSelectedPackages();
 
 		final TestDialogUpdater updater = new TestDialogUpdater(testsTable, this, details);
@@ -254,6 +257,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 								replaces.addAll(test.getReplaces());
 							}
 							aidaPackage.setState(AidaPackage.State.PASSED);
+							DotDiagramCreator ddc = new DotDiagramCreator(aidaProject); ddc.drawDiagram();
 						}
 					}
 					
@@ -287,6 +291,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 								updater.setMessage("Test failed " + test.getPackageName() + "." + test.getClassName() + "." + test.getMethodName());
 								updater.enableButton(runButton);
 								aidaPackage.setState(AidaPackage.State.FAILED);
+								DotDiagramCreator ddc = new DotDiagramCreator(aidaProject); ddc.drawDiagram();
 								updater.setDetails(tester.getDetails());
 								return;
 							}

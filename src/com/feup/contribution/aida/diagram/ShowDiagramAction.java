@@ -32,8 +32,7 @@ public class ShowDiagramAction implements IObjectActionDelegate {
 				if (element instanceof IProject) {
 					project = (IProject) element;
 				} else if (element instanceof IAdaptable) {
-					project = (IProject) ((IAdaptable) element)
-							.getAdapter(IProject.class);
+					project = (IProject) ((IAdaptable) element).getAdapter(IProject.class);
 				}
 				if (project != null) {
 		            Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
