@@ -48,6 +48,7 @@ public class AidaShowDiagramDialog extends TitleAreaDialog{
 			@Override
 			public void run() {
 				canvas.setImageData(new ImageData(imagePath));
+				canvas.getParent().pack();
 			}
 		});
 	}

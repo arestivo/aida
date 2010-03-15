@@ -273,6 +273,9 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 										updater.update(index, 2, "Failed");
 										updater.setMessage("Component " + aidaComponent.toString() + " conflicts with " + test.getPackageName() + "." + test.getClassName() + "." + test.getMethodName());
 										updater.enableButton(runButton);
+										aidaPackage.setState(AidaPackage.State.FAILED);
+										DotDiagramCreator ddc = new DotDiagramCreator(aidaProject); ddc.drawDiagram();
+										updater.setDetails(tester.getDetails());
 										return;
 									}
 								}
