@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 import com.feup.contribution.aida.AidaPlugin;
 import com.feup.contribution.aida.project.AidaComponent;
@@ -39,6 +40,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 
 	public static final int CLOSE = 9999;
 	public static final int RUN = 9998;
+	public static final int SHOW = 9997;
 
 	public AidaRunTestDialog(Shell parentShell) {
 		super(parentShell);
@@ -179,6 +181,19 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 			}
 		});
 
+		final Button showButton = createButton(parent, SHOW, "Show Diagram", true);
+		showButton.setEnabled(true);
+
+		showButton.addSelectionListener(new SelectionAdapter(){
+			public void widgetSelected(SelectionEvent e) {
+	            Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+
+	            AidaShowDiagramDialog dialog = new AidaShowDiagramDialog(activeShell);
+	            dialog.setProject(aidaProject);
+	            dialog.open();
+			}
+		});
+		
 		Button closeButton = createButton(parent, CLOSE, "Close", false);
 
 		closeButton.addSelectionListener(new SelectionAdapter(){
@@ -187,7 +202,6 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 				close();
 			}
 		});
-
 	}
 
 	private void runTests(final Button runButton) {
