@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Aida
 Bundle-SymbolicName: com.feup.contribution.aida;singleton:=true
-Bundle-Version: 0.0.0.qualifier
+Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: com.feup.contribution.aida.AidaPlugin
 Bundle-Vendor: FEUP
 Require-Bundle: org.eclipse.ui,

@@ -168,6 +168,7 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 		details = new Text(parent, SWT.MULTI | SWT.V_SCROLL);		
 		details.setLayoutData(gdd);
 		gdd.heightHint = details.getLineHeight()*8;
+		gdd.widthHint = 600;
 		
 		return parent;
 	}
