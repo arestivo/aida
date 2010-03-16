@@ -15,7 +15,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import com.feup.contribution.aida.AidaPlugin;
 import com.feup.contribution.aida.diagram.ImageCanvas;
 import com.feup.contribution.aida.project.AidaProject;
 

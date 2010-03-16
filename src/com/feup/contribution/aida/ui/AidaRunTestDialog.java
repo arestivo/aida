@@ -1,7 +1,6 @@
 package com.feup.contribution.aida.ui;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.eclipse.jdt.core.IJavaProject;
