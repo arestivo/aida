@@ -1,6 +1,7 @@
 package com.feup.contribution.aida.ui;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.eclipse.jdt.core.IJavaProject;
@@ -273,6 +274,10 @@ public class AidaRunTestDialog extends TitleAreaDialog{
 										updater.update(index, 2, "Failed");
 										updater.setMessage("Component " + aidaComponent.toString() + " conflicts with " + test.getPackageName() + "." + test.getClassName() + "." + test.getMethodName());
 										updater.enableButton(runButton);
+										for (AidaPackage aidaPackage2 : aidaComponent.getPackages())
+											for (AidaPackage aidaPackage3 : aidaPackage2.getReferencedPackages()) {
+												if (aidaPackage3 == aidaPackage) aidaPackage2.setState(AidaPackage.State.CONFLICTS);
+										}
 										aidaPackage.setState(AidaPackage.State.FAILED);
 										DotDiagramCreator ddc = new DotDiagramCreator(aidaProject); ddc.drawDiagram();
 										updater.setDetails(tester.getDetails());

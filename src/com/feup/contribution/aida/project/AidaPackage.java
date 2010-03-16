@@ -9,7 +9,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IResource;
 
 public class AidaPackage {
-	public enum State {COMPILED, FAILED, PASSED};
+	public enum State {COMPILED, FAILED, PASSED, CONFLICTS};
 
 	private String name;
 	

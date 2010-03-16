@@ -44,9 +44,9 @@ public class DotDiagramCreator {
 
 			for (AidaPackage apackage : project.getPackages()) {
 				for (AidaPackage dpackage : apackage.getReferencedPackages()) {
-					if (!apackage.getMandatoryPackages().contains(dpackage)) bw.write("  edge [ color = \"green\"]\n");
+					if (apackage.getState() == AidaPackage.State.CONFLICTS && dpackage.getState() == AidaPackage.State.FAILED) bw.write("  edge [ color = \"red\"]\n");
 					bw.write("    \"" + apackage.getName() + "\" -- \"" + dpackage.getName() + "\"\n");
-					if (!apackage.getMandatoryPackages().contains(dpackage)) bw.write("  edge [ color = \"black\"]\n");
+					if (apackage.getState() == AidaPackage.State.CONFLICTS && dpackage.getState() == AidaPackage.State.FAILED) bw.write("  edge [ color = \"black\"]\n");
 				}
 			}			
 
