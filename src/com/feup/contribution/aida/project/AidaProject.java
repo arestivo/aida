@@ -1,12 +1,12 @@
 package com.feup.contribution.aida.project;
 
-import java.util.Collection; 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
 
 import com.feup.contribution.aida.AidaPlugin;

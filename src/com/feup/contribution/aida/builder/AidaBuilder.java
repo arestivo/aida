@@ -46,21 +46,6 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 	}
 
 	public static final String BUILDER_ID = "com.feup.contribution.aida.aidaBuilder";
-
-//	private static final String MARKER_TYPE = "com.feup.contribution.aida.aidaProblem";
-	
-/*	private void addMarker(IFile file, String message, int lineNumber, int severity) {
-		try {
-			IMarker marker = file.createMarker(MARKER_TYPE);
-			marker.setAttribute(IMarker.MESSAGE, message);
-			marker.setAttribute(IMarker.SEVERITY, severity);
-			if (lineNumber == -1) {
-				lineNumber = 1;
-			}
-			marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
-		} catch (CoreException e) {
-		}
-	}*/
 	
 	@SuppressWarnings("unchecked")
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
@@ -144,15 +129,7 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 		aidaUnit.addReferencedUnits(aidaVisitor.getUnitNames());
 		aidaUnit.addMandatoryUnits(aidaVisitor.getUnitNames());
 	}
-
-/*	private void deleteMarkers(IFile file) {
-		try {
-			file.deleteMarkers(MARKER_TYPE, false, IResource.DEPTH_ZERO);
-		} catch (CoreException ce) {
-			
-		}
-	}*/
-
+	
 	private void checkTest(IResource resource) {
 		ICompilationUnit cu = (ICompilationUnit) JavaCore.create(resource);
 		
@@ -200,11 +177,9 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 
 	        monitor.done();
 	        
-//	        project.logStructure();
 	        DotDiagramCreator diagramCreator = new DotDiagramCreator(project);
 	        diagramCreator.drawDiagram();
 
-	        //TODO: Redo compilation if first time
 	        if (project.isFirstCompilation()){
 	        	project.setFirstCompilation(false);
 	        	needRebuild();

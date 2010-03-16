@@ -78,5 +78,4 @@
             id="AIDA_CONTAINER"
             class="com.feup.contribution.aida.container.AidaClasspathContainerInitializer"/>
   </extension>
-  
-</plugin>
+  </plugin>
