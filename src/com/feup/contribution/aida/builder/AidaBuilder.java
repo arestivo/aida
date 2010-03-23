@@ -1,9 +1,11 @@
 package com.feup.contribution.aida.builder;
 
-import java.util.HashMap;
+import java.util.HashMap; 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.aspectj.asm.IRelationship;
 import org.eclipse.ajdt.core.model.AJProjectModelFacade;
@@ -53,15 +55,13 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 
-	protected String getPackageName(ICompilationUnit cu) {
+	private String getPackageName(ICompilationUnit cu) {
 		try {
 			if (cu.getPackageDeclarations().length==0) {
-				AidaPlugin.getDefault().log("DPN: " + cu.getElementName());
 				return "default";
 			}
 			return cu.getPackageDeclarations()[0].getElementName();
 		} catch (JavaModelException e) {}
-		AidaPlugin.getDefault().log("UPN: " + cu.getElementName());
 		return "unknown";
 	}
 
@@ -91,6 +91,12 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected String getPackageLabel(ICompilationUnit cu) {
+		if (cu.getResource().getFileExtension().equals("aj")) return getAspectPackageLabel(cu);
+		if (cu.getResource().getFileExtension().equals("java")) return getClassPackageLabel(cu);
+		return "unknown type";
+	}
+	
+	private String getClassPackageLabel(ICompilationUnit cu) {
 		try {
 			if (cu.getTypes().length > 0)
 				for (IAnnotation annotation : cu.getTypes()[0].getAnnotations()) {
@@ -103,7 +109,19 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 		} catch (JavaModelException e) {} 
 		return getPackageName(cu);
 	}
-	
+
+	private String getAspectPackageLabel(ICompilationUnit cu) {
+		try {
+			if (cu.getTypes().length > 0){
+				String source = cu.getTypes()[0].getSource();
+				Pattern pattern = Pattern.compile("@PackageName\\(\"(.+?)\"\\)");
+				Matcher matcher = pattern.matcher(source);
+				if (matcher.find()) return matcher.group(1);
+			}
+		} catch (JavaModelException e) {} 
+		return getPackageName(cu);
+	}
+
 	void checkJava(IResource resource) {
 		ICompilationUnit cu = (ICompilationUnit) JavaCore.create(resource);
 		if (cu.findPrimaryType() == null) return;
