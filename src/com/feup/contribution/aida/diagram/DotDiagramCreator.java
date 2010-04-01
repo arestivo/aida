@@ -39,11 +39,12 @@ public class DotDiagramCreator {
 				bw.write("    \"" + apackage.getName() + "\" [label=\""+apackage.getName()+"\"]\n");
 			}
 
-
-			bw.write("  edge [ color = \"black\", arrowhead=\"empty\", style=\"dashed\" ]\n");
+			bw.write("  edge [ color = \"black\", arrowhead=\"empty\" ]\n");
 
 			for (AidaPackage apackage : project.getPackages()) {
 				for (AidaPackage dpackage : apackage.getReferencedPackages()) {
+					if (apackage.getMandatoryPackages().contains(dpackage)) bw.write("  edge [ style=\"solid\" ]\n");
+					else bw.write("  edge [ style=\"dashed\" ]\n");
 					if (apackage.getState() == AidaPackage.State.CONFLICTS && dpackage.getState() == AidaPackage.State.FAILED) bw.write("  edge [ color = \"red\"]\n");
 					bw.write("    \"" + apackage.getName() + "\" -- \"" + dpackage.getName() + "\"\n");
 					if (apackage.getState() == AidaPackage.State.CONFLICTS && dpackage.getState() == AidaPackage.State.FAILED) bw.write("  edge [ color = \"black\"]\n");
