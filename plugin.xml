@@ -13,6 +13,7 @@
          </run>
       </builder>
    </extension>
+
    <extension
          id="aidaNature"
          name="Aida Project Nature"
@@ -26,7 +27,11 @@
             id="com.feup.contribution.aida.aidaBuilder">
       </builder>
    </extension>
-   <extension point="org.eclipse.ui.popupMenus">
+
+   <extension
+         id="aidaPopup"
+         name="AidaPopup"
+         point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="true"
             objectClass="org.eclipse.core.resources.IProject"
@@ -61,6 +66,7 @@
          </action>
       </objectContribution>
    </extension>
+
    <extension
          id="aidaProblem"
          name="Aida Problem"
@@ -73,9 +79,12 @@
       </persistent>
    </extension>
 
-  <extension point="org.eclipse.jdt.core.classpathContainerInitializer">
+  <extension
+        id="aidaClasspath"
+        name="AidaClasspath"
+        point="org.eclipse.jdt.core.classpathContainerInitializer">
       <classpathContainerInitializer
             id="AIDA_CONTAINER"
             class="com.feup.contribution.aida.container.AidaClasspathContainerInitializer"/>
   </extension>
-  </plugin>
+</plugin>
