@@ -27,7 +27,7 @@ public class DotDiagramCreator {
 		String unitpath = project.getIProject().getPath().toOSString();
 		try {
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(workspacepath + unitpath + "/aida.dot")));
-			bw.write("graph \"druid\" {\n");
+			bw.write("digraph \"druid\" {\n");
 			bw.write("  node [ fontname = \"Trebuchet\", label = \"\\N\"]\n");
 
 			bw.write("  node [ shape = \"tab\", color = \"blue\"]\n");
@@ -46,7 +46,7 @@ public class DotDiagramCreator {
 					if (apackage.getMandatoryPackages().contains(dpackage)) bw.write("  edge [ style=\"solid\" ]\n");
 					else bw.write("  edge [ style=\"dashed\" ]\n");
 					if (apackage.getState() == AidaPackage.State.CONFLICTS && dpackage.getState() == AidaPackage.State.FAILED) bw.write("  edge [ color = \"red\"]\n");
-					bw.write("    \"" + apackage.getName() + "\" -- \"" + dpackage.getName() + "\"\n");
+					bw.write("    \"" + apackage.getName() + "\" -> \"" + dpackage.getName() + "\"\n");
 					if (apackage.getState() == AidaPackage.State.CONFLICTS && dpackage.getState() == AidaPackage.State.FAILED) bw.write("  edge [ color = \"black\"]\n");
 				}
 			}			
@@ -58,7 +58,7 @@ public class DotDiagramCreator {
 						for (AidaPackage rpackage : project.getPackages())
 							for (AidaTest rtest : rpackage.getTests())
 								if (replaces.equals(rtest.getFullName()) && !cReplaces.contains(apackage.getName()+"->"+rpackage.getName())) {
-									bw.write("    \"" + apackage.getName() + "\" -- \"" + rpackage.getName() + "\"\n");
+									bw.write("    \"" + apackage.getName() + "\" -> \"" + rpackage.getName() + "\"\n");
 									cReplaces.add(apackage.getName()+"->"+rpackage.getName());
 								}
 			
