@@ -4,4 +4,7 @@ Aida is an eclipse plugin that helps developers use unit testing with AOP code.
 
 h2. Installation
 
-Currently Aida only works in Linux. One of these days detailed step by step instructions on how to install Aida will appear here.
+Currently Aida only works in Linux. Packages required:
+
+* sudo apt-get install aspectj
+* sudo apt-get install graphviz
