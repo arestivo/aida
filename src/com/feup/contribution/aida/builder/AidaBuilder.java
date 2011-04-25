@@ -126,7 +126,7 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 		ICompilationUnit cu = (ICompilationUnit) JavaCore.create(resource);
 		if (cu.findPrimaryType() == null) return;
 		
-		if (isTestUnit(cu)) {checkTest(resource); return;}
+		if (isTestUnit(cu)) checkTest(resource);
 		
 		AidaProject project = AidaProject.getProject(getProject().getName());
 		AidaPackage apackage = project.getPackage(getPackageLabel(cu));
