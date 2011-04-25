@@ -208,7 +208,6 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void checkAdvises(AidaProject project) throws CoreException {
 		AJProjectModelFacade model = AJProjectModelFactory.getInstance().getModelForProject(getProject());
 		if (model.hasModel()) {
