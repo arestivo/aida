@@ -49,7 +49,7 @@ public class AidaBuilder extends IncrementalProjectBuilder {
 
 	public static final String BUILDER_ID = "com.feup.contribution.aida.aidaBuilder";
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
 		fullBuild(monitor);
 		return null;
